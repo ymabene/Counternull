@@ -1,0 +1,512 @@
+v = v+1
+}
+if(district.1Ds$Z[j]==1 & w.rep.1Ds.counter[j,k]==0){ # assigned off and observed on
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+estOff[w]<-district.1Ds$charge_prosecuted_1000_rate_post[j] - district.1Ds$charge_prosecuted_1000_rate_pre[j] - x
+w = w+1
+}
+}
+#on<-mean(obsOn+estOn)
+#off<-mean(obsOff+estOff)
+#CounterSamples[k]<-on-off
+#print(CounterSamples[k])
+#print(k)
+on<-(sum(obsOn) + sum(estOn)) / (t + u - 2) # mean difference for cameras on
+off<-(sum(obsOff) + sum(estOff)) / (v + w - 2) # mean difference for cameras off
+CounterSamples[k]<-(on-off)
+#print(CounterSamples[k])
+}
+#Histograms
+#NullHist<-hist(PermSamples,breaks=100,col = "gold")
+#abline(v=test.stat1,col="red")
+#CounterHist<-hist(CounterSamples,breaks=100,col = "goldenrod")
+#plot( NullHist, col="gold", xlim=c(-13000,5000))  # first histogram
+#plot( CounterHist, col="goldenrod", xlim=c(-13000,5000), add=T)  # second
+return(CounterSamples)
+}
+# Searching Algorithm
+# Low, High
+# If Low and High are met, quit
+# Start with 2Tobs = x
+# If p value > .375, move x to the left (between low and start)
+# If p value < 3.75, move x to the right (between start and high)
+# If p value = .375, add x to counter null vector
+# Find range function
+# Keep adding 1 to x and if p value is .375 add to counter null vector. If not = .375
+# Keep subtracting 1 from x and if p value is .375 add to counter null. If not, quit
+#COUNTERSAMPLES IS NOT CONSISTENT
+find_range<-function(CounterNullValue,CounterNullValues){
+start<-CounterNullValue
+CounterNullValues<-vector(length = 500)
+PVal<-.375
+i<-1
+while (PVal == .375){
+CounterNullValues[i]<-CounterNullValue
+i<-i+1
+CounterNullValue<-CounterNullValue + 1
+CounterSamples<-make_counter_distribution(CounterNullValue, CounterSamples)
+PVal<-sum(CounterSamples>=(test.stat1))/128
+}
+# CounterNullValue was too large
+CounterNullValue<-start
+PVal<-.375
+while (PVal == .375) {
+CounterNullValues[i]=CounterNullValue
+i<-i+1
+CounterNullValue<-CounterNullValue - 1
+CounterSamples<-make_counter_distribution(CounterNullValue, CounterSamples)
+PVal<-sum(CounterSamples>=(test.stat1))/128
+}
+print(CounterNullValues)
+return(CounterNullValues)
+}
+CounterNullValue<--3300
+Low<--8000 # all are above
+High<
+rm(list=ls())
+rm(list=ls())
+d <- read.table(file ="C:\\Users\\yasmi\\OneDrive\\My Documents\\Harvard2021\\dataset.csv", header = T, sep = ",", stringsAsFactors = T)
+#View(d)
+#names(d)
+district.1Ds<-subset(d,district=="1Ds") # shows data in district 1DS
+district.1Ds<-district.1Ds[order(district.1Ds$block_id),] # puts data in order of block ID
+#View(district.1Ds)
+#district.1Ds[,1:5] # prints 5 columns of data set
+#hist(district.1Ds$block_id,breaks=1000)
+w.rep.1Ds<-matrix(ncol=10000,nrow=14) # matrix with 10000 columns
+for(j in 1:10000)
+{
+count<-1
+for(i in 1:7) # for each pair of officers
+{
+a<-sample(c(0,1),2,replace=FALSE)  # unique values
+w.rep.1Ds[count,j]<-a[1]  # puts 1 or 0 into matrix
+w.rep.1Ds[count+1,j]<-a[2] # puts 1 or 0 into matrix
+count<-count+2 # increments row
+}
+# print(j)
+}
+# unique pairs only
+dim(unique(t(w.rep.1Ds)))
+w.rep.1Ds.t<-unique(t(w.rep.1Ds))
+w.rep.1Ds<-t(w.rep.1Ds.t)
+# permuation matrix with differences of means
+PermSamples <- matrix(ncol=1,nrow=128)
+for(k in 1:128)
+{
+on<-mean(district.1Ds$charge_prosecuted_1000_rate_post[w.rep.1Ds[,k]==1]-district.1Ds$charge_prosecuted_1000_rate_pre[w.rep.1Ds[,k]==1])
+off<-mean(district.1Ds$charge_prosecuted_1000_rate_post[w.rep.1Ds[,k]==0]-district.1Ds$charge_prosecuted_1000_rate_pre[w.rep.1Ds[,k]==0])
+PermSamples[k]<-on-off
+}
+# calculate difference in means
+on_mean <-mean((district.1Ds$charge_prosecuted_1000_rate_post - district.1Ds$charge_prosecuted_1000_rate_pre)[district.1Ds$Z=="1"]) # mean for cameras on
+off_mean <-mean((district.1Ds$charge_prosecuted_1000_rate_post - district.1Ds$charge_prosecuted_1000_rate_pre)[district.1Ds$Z=="0"]) # mean for cameras off
+# difference
+test.stat1 <- on_mean - off_mean
+test.stat1
+#abline(v=test.stat1,col="red")
+#sum(PermSamples<=(test.stat1))/128 # P-value
+# summary(district.1Ds)
+# CounterNull Permutations!
+w.rep.1Ds.counter<-matrix(ncol=10000,nrow=14)
+for(j in 1:10000)
+{
+count<-1
+for(i in 1:7)
+{
+a<-sample(c(0,1),2,replace=FALSE)
+w.rep.1Ds.counter[count,j]<-a[1]
+w.rep.1Ds.counter[count+1,j]<-a[2]
+count<-count+2
+}
+}
+# unique pairs only
+dim(unique(t(w.rep.1Ds.counter)))
+w.rep.1Ds.tr<-unique(t(w.rep.1Ds.counter))
+w.rep.1Ds.counter<-t(w.rep.1Ds.tr)
+# permuation matrix with differences of means
+CounterSamples <- matrix(ncol=1,nrow=128)
+# COUNTERNULL
+make_counter_distribution<-function(CounterNullValue,CounterSamples){
+x<-CounterNullValue
+#print(district.1Ds$Z[1])
+#print(w.rep.1Ds[1,1])
+for(k in 1:128)
+{
+obsOn<-vector(length=14) # observed cameras on
+estOn<-vector(length=14) # estimated cameras on
+obsOff<-vector(length=14) # observed cameras off
+estOff<-vector(length=14) # estimated cameras off
+t<-1 # index for observed on/assigned on
+u<-1 # index for observed off/assigned on
+v<-1 # index for observed off/assigned off
+w<-1 # index for observed on/assigned off
+for(j in 1:14){
+if(district.1Ds$Z[j]==1 & w.rep.1Ds.counter[j,k]==1){ # assigned on and observed on
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+obsOn[t]<-district.1Ds$charge_prosecuted_1000_rate_post[j] -district.1Ds$charge_prosecuted_1000_rate_pre[j]
+t = t+1
+}
+if(district.1Ds$Z[j]==0 & w.rep.1Ds.counter[j,k]==1){ # assigned on and observed off
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+estOn[u]<-district.1Ds$charge_prosecuted_1000_rate_post[j] -district.1Ds$charge_prosecuted_1000_rate_pre[j] + x
+u = u + 1
+}
+if(district.1Ds$Z[j]==0 & w.rep.1Ds.counter[j,k]==0){ # assigned off and observed off
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+obsOff[v]<-district.1Ds$charge_prosecuted_1000_rate_post[j] -district.1Ds$charge_prosecuted_1000_rate_pre[j]
+v = v+1
+}
+if(district.1Ds$Z[j]==1 & w.rep.1Ds.counter[j,k]==0){ # assigned off and observed on
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+estOff[w]<-district.1Ds$charge_prosecuted_1000_rate_post[j] - district.1Ds$charge_prosecuted_1000_rate_pre[j] - x
+w = w+1
+}
+}
+#on<-mean(obsOn+estOn)
+#off<-mean(obsOff+estOff)
+#CounterSamples[k]<-on-off
+#print(CounterSamples[k])
+#print(k)
+on<-(sum(obsOn) + sum(estOn)) / (t + u - 2) # mean difference for cameras on
+off<-(sum(obsOff) + sum(estOff)) / (v + w - 2) # mean difference for cameras off
+CounterSamples[k]<-(on-off)
+#print(CounterSamples[k])
+}
+#Histograms
+#NullHist<-hist(PermSamples,breaks=100,col = "gold")
+#abline(v=test.stat1,col="red")
+#CounterHist<-hist(CounterSamples,breaks=100,col = "goldenrod")
+#plot( NullHist, col="gold", xlim=c(-13000,5000))  # first histogram
+#plot( CounterHist, col="goldenrod", xlim=c(-13000,5000), add=T)  # second
+return(CounterSamples)
+}
+# Searching Algorithm
+# Low, High
+# If Low and High are met, quit
+# Start with 2Tobs = x
+# If p value > .375, move x to the left (between low and start)
+# If p value < 3.75, move x to the right (between start and high)
+# If p value = .375, add x to counter null vector
+# Find range function
+# Keep adding 1 to x and if p value is .375 add to counter null vector. If not = .375
+# Keep subtracting 1 from x and if p value is .375 add to counter null. If not, quit
+#COUNTERSAMPLES IS NOT CONSISTENT
+find_range<-function(CounterNullValue,CounterNullValues){
+start<-CounterNullValue
+CounterNullValues<-vector(length = 500)
+PVal<-.375
+i<-1
+while (PVal == .375){
+CounterNullValues[i]<-CounterNullValue
+i<-i+1
+CounterNullValue<-CounterNullValue + 1
+CounterSamples<-make_counter_distribution(CounterNullValue, CounterSamples)
+PVal<-sum(CounterSamples>=(test.stat1))/128
+}
+# CounterNullValue was too large
+CounterNullValue<-start
+PVal<-.375
+while (PVal == .375) {
+CounterNullValues[i]=CounterNullValue
+i<-i+1
+CounterNullValue<-CounterNullValue - 1
+CounterSamples<-make_counter_distribution(CounterNullValue, CounterSamples)
+PVal<-sum(CounterSamples>=(test.stat1))/128
+}
+print(CounterNullValues)
+return(CounterNullValues)
+}
+# Search Starts Here!!!
+CounterNullValue<--3300
+Low<--8000 # all are above
+High<-0 # all are below
+CounterSamples<-make_counter_distribution(CounterNullValue,CounterSamples)
+CounterSamples<-make_counter_distribution(CounterNullValue,CounterSamples)
+PVal<-sum(CounterSamples>=(test.stat1))/128 # P-value could go other way??
+rm(list=ls())
+#load data
+d <- read.table(file ="C:\\Users\\yasmi\\OneDrive\\My Documents\\Harvard2021\\dataset.csv", header = T, sep = ",", stringsAsFactors = T)
+#View(d)
+#names(d)
+district.1Ds<-subset(d,district=="1Ds") # shows data in district 1DS
+district.1Ds<-district.1Ds[order(district.1Ds$block_id),] # puts data in order of block ID
+#View(district.1Ds)
+#district.1Ds[,1:5] # prints 5 columns of data set
+#hist(district.1Ds$block_id,breaks=1000)
+w.rep.1Ds<-matrix(ncol=10000,nrow=14) # matrix with 10000 columns
+for(j in 1:10000)
+{
+count<-1
+for(i in 1:7) # for each pair of officers
+{
+a<-sample(c(0,1),2,replace=FALSE)  # unique values
+w.rep.1Ds[count,j]<-a[1]  # puts 1 or 0 into matrix
+w.rep.1Ds[count+1,j]<-a[2] # puts 1 or 0 into matrix
+count<-count+2 # increments row
+}
+# print(j)
+}
+# unique pairs only
+dim(unique(t(w.rep.1Ds)))
+w.rep.1Ds.t<-unique(t(w.rep.1Ds))
+w.rep.1Ds<-t(w.rep.1Ds.t)
+# permuation matrix with differences of means
+PermSamples <- matrix(ncol=1,nrow=128)
+for(k in 1:128)
+{
+on<-mean(district.1Ds$charge_prosecuted_1000_rate_post[w.rep.1Ds[,k]==1]-district.1Ds$charge_prosecuted_1000_rate_pre[w.rep.1Ds[,k]==1])
+off<-mean(district.1Ds$charge_prosecuted_1000_rate_post[w.rep.1Ds[,k]==0]-district.1Ds$charge_prosecuted_1000_rate_pre[w.rep.1Ds[,k]==0])
+PermSamples[k]<-on-off
+}
+# calculate difference in means
+on_mean <-mean((district.1Ds$charge_prosecuted_1000_rate_post - district.1Ds$charge_prosecuted_1000_rate_pre)[district.1Ds$Z=="1"]) # mean for cameras on
+off_mean <-mean((district.1Ds$charge_prosecuted_1000_rate_post - district.1Ds$charge_prosecuted_1000_rate_pre)[district.1Ds$Z=="0"]) # mean for cameras off
+# difference
+test.stat1 <- on_mean - off_mean
+w.rep.1Ds.counter<-matrix(ncol=10000,nrow=14)
+for(j in 1:10000)
+{
+count<-1
+for(i in 1:7)
+{
+a<-sample(c(0,1),2,replace=FALSE)
+w.rep.1Ds.counter[count,j]<-a[1]
+w.rep.1Ds.counter[count+1,j]<-a[2]
+count<-count+2
+}
+}
+# unique pairs only
+dim(unique(t(w.rep.1Ds.counter)))
+w.rep.1Ds.tr<-unique(t(w.rep.1Ds.counter))
+w.rep.1Ds.counter<-t(w.rep.1Ds.tr)
+# permuation matrix with differences of means
+CounterSamples <- matrix(ncol=1,nrow=128)
+# COUNTERNULL
+make_counter_distribution<-function(CounterNullValue,CounterSamples){
+x<-CounterNullValue
+#print(district.1Ds$Z[1])
+#print(w.rep.1Ds[1,1])
+for(k in 1:128)
+{
+obsOn<-vector(length=14) # observed cameras on
+estOn<-vector(length=14) # estimated cameras on
+obsOff<-vector(length=14) # observed cameras off
+estOff<-vector(length=14) # estimated cameras off
+t<-1 # index for observed on/assigned on
+u<-1 # index for observed off/assigned on
+v<-1 # index for observed off/assigned off
+w<-1 # index for observed on/assigned off
+for(j in 1:14){
+if(district.1Ds$Z[j]==1 & w.rep.1Ds.counter[j,k]==1){ # assigned on and observed on
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+obsOn[t]<-district.1Ds$charge_prosecuted_1000_rate_post[j] -district.1Ds$charge_prosecuted_1000_rate_pre[j]
+t = t+1
+}
+if(district.1Ds$Z[j]==0 & w.rep.1Ds.counter[j,k]==1){ # assigned on and observed off
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+estOn[u]<-district.1Ds$charge_prosecuted_1000_rate_post[j] -district.1Ds$charge_prosecuted_1000_rate_pre[j] + x
+u = u + 1
+}
+if(district.1Ds$Z[j]==0 & w.rep.1Ds.counter[j,k]==0){ # assigned off and observed off
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+obsOff[v]<-district.1Ds$charge_prosecuted_1000_rate_post[j] -district.1Ds$charge_prosecuted_1000_rate_pre[j]
+v = v+1
+}
+if(district.1Ds$Z[j]==1 & w.rep.1Ds.counter[j,k]==0){ # assigned off and observed on
+#print(district.1Ds$Z[j])
+#print(w.rep.1Ds[j,k])
+estOff[w]<-district.1Ds$charge_prosecuted_1000_rate_post[j] - district.1Ds$charge_prosecuted_1000_rate_pre[j] - x
+w = w+1
+}
+}
+#on<-mean(obsOn+estOn)
+#off<-mean(obsOff+estOff)
+#CounterSamples[k]<-on-off
+#print(CounterSamples[k])
+#print(k)
+on<-(sum(obsOn) + sum(estOn)) / (t + u - 2) # mean difference for cameras on
+off<-(sum(obsOff) + sum(estOff)) / (v + w - 2) # mean difference for cameras off
+CounterSamples[k]<-(on-off)
+#print(CounterSamples[k])
+}
+#Histograms
+#NullHist<-hist(PermSamples,breaks=100,col = "gold")
+#abline(v=test.stat1,col="red")
+#CounterHist<-hist(CounterSamples,breaks=100,col = "goldenrod")
+#plot( NullHist, col="gold", xlim=c(-13000,5000))  # first histogram
+#plot( CounterHist, col="goldenrod", xlim=c(-13000,5000), add=T)  # second
+return(CounterSamples)
+}
+# Searching Algorithm
+# Low, High
+# If Low and High are met, quit
+# Start with 2Tobs = x
+# If p value > .375, move x to the left (between low and start)
+# If p value < 3.75, move x to the right (between start and high)
+# If p value = .375, add x to counter null vector
+# Find range function
+# Keep adding 1 to x and if p value is .375 add to counter null vector. If not = .375
+# Keep subtracting 1 from x and if p value is .375 add to counter null. If not, quit
+#COUNTERSAMPLES IS NOT CONSISTENT
+find_range<-function(CounterNullValue,CounterNullValues){
+start<-CounterNullValue
+CounterNullValues<-vector(length = 500)
+PVal<-.375
+i<-1
+while (PVal == .375){
+CounterNullValues[i]<-CounterNullValue
+i<-i+1
+CounterNullValue<-CounterNullValue + 1
+CounterSamples<-make_counter_distribution(CounterNullValue, CounterSamples)
+PVal<-sum(CounterSamples>=(test.stat1))/128
+}
+# CounterNullValue was too large
+CounterNullValue<-start
+PVal<-.375
+while (PVal == .375) {
+CounterNullValues[i]=CounterNullValue
+i<-i+1
+CounterNullValue<-CounterNullValue - 1
+CounterSamples<-make_counter_distribution(CounterNullValue, CounterSamples)
+PVal<-sum(CounterSamples>=(test.stat1))/128
+}
+print(CounterNullValues)
+return(CounterNullValues)
+}
+# Search Starts Here!!!
+CounterNullValue<--3300
+Low<--8000 # all are above
+High<-0 # all are below
+CounterSamples<-make_counter_distribution(CounterNullValue,CounterSamples)
+PVal<-sum(CounterSamples>=(-2215))/128 # P-value could go other way??
+print(test.stat1)
+PVal<-sum(CounterSamples>=(-2215.128))/128 # P-value could go other way??
+PVal<-sum(CounterSamples>=(-2215.12803257143))/128 # P-value could go other way??
+rm(list=ls())
+create_null_distribution(sample_district,rand_matrix)
+View(Permsamples)
+ls()
+library(Counternull)
+find_test_stat()
+print(sum(CounterSamples>=(find_test_stat()))/128)
+test_stat<-find_test_stat()
+library(Counternull)
+create_counternull_distribution(sample_district,null_matrix,counternull_value)
+create_counternull_distribution(sample_district,null_matrix,-3300)
+library(Counternull)
+find_counternull_values(.375,sample_district,null_matrix,-3323)
+library(Counternull)
+find_counternull_values(.375,sample_district,null_matrix,-3323)
+print(test_stat)
+library(Counternull)
+create_counternull_distribution(sample_district,rand_matrix,-3323)
+find_counternull_values(.375,sample_district,rand_matrix,-3323)
+test_stat<-find_test_stat()
+print(test_stat)
+rm(list=ls())
+library(Counternull)
+create_counternull_distribution(sample_district,rand_matrix,-3323)
+library(Counternull)
+rm(list=ls())
+create_counternull_distribution(sample_district,rand_matrix,-3323)
+rm(list=ls())
+find_counternull_values(.375,sample_district,rand_matrix,-3323)
+lm(list=ls())
+rm(list=ls())
+find_counternull_values(.375,sample_district,rand_matrix,-3323)
+find_counternull_values(.375,sample_district,rand_matrix,-3323)
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-3323)
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-3323)
+library(Counternull)
+rm(list=ls())
+print(find_test_stat())
+create_null_distribution(sample_district,rand_matrix)
+test_stat<-find_test_stat()
+rm(list=ls())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,test_stat = find_test_stat())
+library(Counternull)
+find_counternull_values(obs_pval,sample_district,rand_matrix,-8000,0,test_stat = find_test_stat())
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,test_stat = find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,-2215.12803257143)
+library(Counternull)
+find_counternull_set(.375,sample_district,rand_matrix,-3323)
+library(Counternull)
+find_counternull_set(.375,sample_district,rand_matrix,-3323,-2215.12803257143)
+find_counternull_set(.375,sample_district,rand_matrix,-3323,find_test_stat())
+library(Counternull)
+create_counternull_distribution(sample_district,rand_matrix,-3323,find_test_stat())
+library(Counternull)
+create_counternull_distribution_no_hist(sample_district,rand_matrix,-3323,find_test_stat())
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(sample_district,rand_matrix,-8000,0,find_test_stat())
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+library(Counternull)
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+ls()
+create_null_distribution(sample_district,rand_matrix)
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+find_test_stat()
+library(Counternull)
+find_test_stat()
+print(find_test_stat())
+create_null_distribution(sample_district,rand_matrix)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+create_counternull_distribution(sample_district,rand_matrix,-3323,find_test_stat())
+library(Counternull)
+create_counternull_distribution_no_hist(sample_district,rand_matrix,-3323,find_test_stat())
+find_counternull_values(.375,sample_district,rand_matrix,-8000,0,find_test_stat())
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)
+create_null_distribution(sample_district,rand_matrix)
+library(Counternull)
+create_null_distribution(sample_district,rand_matrix)

@@ -1,0 +1,32 @@
+{
+    "id": "30625BB5",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1635309975394.0,
+    "source_on_save": false,
+    "relative_order": 38,
+    "properties": {
+        "expression": "permutation_null_cohens_d(rand_matrix_1DS, sample_district_1DS$charge_prosecuted_1000_rate_post -      sample_district_1DS$charge_prosecuted_1000_rate_pre, 128)",
+        "caption": "permutation_null_cohens_d(rand_matrix_1DS, sample_district_1DS$charge_prosecuted_1000_rate_post - ",
+        "totalObservations": 128,
+        "displayedObservations": 128,
+        "variables": 1,
+        "cacheKey": "76C2F76A",
+        "object": "",
+        "environment": "_rs_no_env",
+        "contentUrl": "grid_resource/gridviewer.html?env=_rs_no_env&obj=&cache_key=76C2F76A&max_cols=50",
+        "preview": 0
+    },
+    "folds": "",
+    "lastKnownWriteTime": 8028075836783665696,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1635309975394,
+    "read_only": false,
+    "read_only_alternatives": []
+}

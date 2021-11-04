@@ -1,0 +1,25 @@
+{
+    "id": "A7BF53BD",
+    "path": "C:/Users/yasmi/OneDrive/My Documents/Harvard2021/Counternull/data-raw/create_rand_matrix_1DS.R",
+    "project_path": "data-raw/create_rand_matrix_1DS.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1629498166812.0,
+    "source_on_save": false,
+    "relative_order": 10,
+    "properties": {
+        "tempName": "Untitled1",
+        "cursorPosition": "0,33",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1631673690,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1631673690250,
+    "read_only": false,
+    "read_only_alternatives": []
+}
