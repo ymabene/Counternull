@@ -22,13 +22,13 @@ exposure (1) or non exposure (0) for each group (row) that is measured. Each
 measured outcome (variable) should be represented by an additional column.}
 
 \item{extreme}{Direction which is defined as more extreme for test statistic
-in distribution (0 for left or 1 for right)}
+in distribution (0 for less or 1 for greater)}
 
 \item{rand_matrix}{Matrix with unique randomizations for exposure
 assignment}
 
-\item{permutation_counter_function}{Function used to create permutation vector
-for counternull distribution}
+\item{permutation_counter_function}{Function used to create permutation
+vector for counternull distribution}
 
 \item{counternull_value}{Number to test out as counternull value}
 

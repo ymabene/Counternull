@@ -11,11 +11,11 @@
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
 #' @param extreme Direction which is defined as more extreme for test statistic
-#' in distribution (0 for left or 1 for right)
+#' in distribution (0 for less or 1 for greater)
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
-#' @param permutation_counter_function Function used to create permutation vector
-#' for counternull distribution
+#' @param permutation_counter_function Function used to create permutation
+#' vector for counternull distribution
 #' @param counternull_value Number to test out as counternull value
 #' @param test_stat Observed test statistic.
 #' @param variable Variable measured Format: sample_data$column
