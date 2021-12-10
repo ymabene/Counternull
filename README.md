@@ -7,13 +7,13 @@
 
 <!-- badges: end -->
 
-Counternull package allows users to resample data for permutation
-testing. Users may generate null distributions from their own datasets
-and calculate tests statistics and P-values. This package allows users
-to identify counternull values in a dataset and plot counternull
-distributions. The ability for users to obtain both P-values and
-counternull values from a dataset helps prevent against common
-misinterpretations in hypothesis testing.
+Counternull package allows users to resample data for
+randomization-based testing. Users may generate null randomization
+distributions from their own datasets and calculate tests statistics and
+P-values. This package allows users to identify counternull sets in a
+dataset and plot counternull randomization distributions. The ability
+for users to obtain both P-values and counternull sets from a dataset
+helps prevent against common misinterpretations in hypothesis testing.
 
 ## Installation
 
@@ -34,7 +34,10 @@ library(Counternull)
 ## plots null distribution of given dataset
 ## dashed black line: test statistic
 create_null_distribution(sample_district_1DS,0,rand_matrix_1DS,
-sample_district_1DS$charge_prosecuted_1000_rate_post,
+permutation_null_diff_means,find_test_stat_diff_means(sample_district_1DS,
+sample_district_1DS$charge_prosecuted_1000_rate_post -
+sample_district_1DS$charge_prosecuted_1000_rate_pre),
+sample_district_1DS$charge_prosecuted_1000_rate_post -
 sample_district_1DS$charge_prosecuted_1000_rate_pre,128)
 #> [1] -2215.128
 #> [1] 0.375
@@ -44,11 +47,12 @@ sample_district_1DS$charge_prosecuted_1000_rate_pre,128)
 ## dashed black line: test statistic,
 ## dashed red line: counternull value,
 ## dashed gray line: 0
-find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,-8000,0,
-find_test_stat(sample_district_1DS,
-sample_district_1DS$charge_prosecuted_1000_rate_post,
+find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
+permutation_null_diff_means,permutation_counter_diff_means,
+-8000,0, find_test_stat_diff_means(sample_district_1DS,
+sample_district_1DS$charge_prosecuted_1000_rate_post -
 sample_district_1DS$charge_prosecuted_1000_rate_pre),
-sample_district_1DS$charge_prosecuted_1000_rate_post,
+sample_district_1DS$charge_prosecuted_1000_rate_post-
 sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
 #>   [1] -3323 -3322 -3321 -3320 -3319 -3318 -3317 -3316 -3315 -3314 -3313 -3312
 #>  [13] -3311 -3310 -3309 -3308 -3307 -3306 -3305 -3304 -3303 -3302 -3301 -3300
