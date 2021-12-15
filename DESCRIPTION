@@ -23,3 +23,5 @@ Imports:
     stats,
     effsize,
     graphics
+URL: https://github.com/ymabene/Counternull
+BugReports: https://github.com/ymabene/Counternull/issues
