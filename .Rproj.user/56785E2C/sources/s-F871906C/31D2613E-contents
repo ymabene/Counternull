@@ -1,4 +1,0 @@
-exportPattern("^[[:alpha:]]+")
-importFrom("graphics", "abline", "hist")
-importFrom("stats", "t.test")
-importFrom("effsize", "cohen.d")
