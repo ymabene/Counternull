@@ -57,8 +57,7 @@ create_counternull_distribution<-function(sample_data,extreme,rand_matrix,
                                           pairs){
   # creates permutation vector with differences of means
   counter_samples<-permutation_counter_function(sample_data,rand_matrix,
-                                                  counternull_value,variable,
-                                                  iterations,pairs)
+                                                -3323,variable,iterations,pairs)
   # creates histograms
   counter_hist<-hist(counter_samples,breaks=100,col = "goldenrod",
                      main=paste("Counterull Distribution"),

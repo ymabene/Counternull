@@ -22,13 +22,12 @@ permutation_null_paired_t<-function(rand_matrix,variable,iterations){
   # creates distribution
   for(k in 1:iterations)
   {
-    on<-(variable[rand_matrix[,k]==1]) # exposed
-    off<-(variable[rand_matrix[,k]==0]) # not exposed
-    test_stat <- t.test(on, off,
-                        alternative = c("less"),
-                        mu = 0, paired = TRUE,
-                        conf.level = 0.95,)
-
+      on<-(variable[rand_matrix[,k]==1]) # exposed
+      off<-(variable[rand_matrix[,k]==0]) # not exposed
+      test_stat <- t.test(on, off,
+                          alternative = c("less"),
+                          mu = 0, paired = TRUE,
+                         conf.level = .95)
     perm_samples[k] <- test_stat$statistic
   }
   return(invisible(perm_samples))

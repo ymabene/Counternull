@@ -24,11 +24,10 @@ permutation_null_t<-function(rand_matrix,variable,iterations){
   {
     on<-(variable[rand_matrix[,k]==1]) # exposed
     off<-(variable[rand_matrix[,k]==0]) # not exposed
-    test_stat <- t.test(on, off,
-                        alternative = c("less"),
-                        mu = 0,
-                        conf.level = 0.95,)
-
+      test_stat <- t.test(on, off,
+                          alternative = c("less"),
+                          mu = 0,
+                          conf.level = .95)
     perm_samples[k] <- test_stat$statistic
   }
   return(invisible(perm_samples))

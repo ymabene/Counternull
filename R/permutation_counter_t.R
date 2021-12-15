@@ -66,9 +66,9 @@ permutation_counter_t<-function(sample_data, rand_matrix,
     on<-c(obs_on,est_on)
     off<-c(obs_off,est_off)
     test_stat <- t.test(on,off,
-                        alternative = c("less"),
-                        mu = 0,
-                        conf.level = 0.95,)
+                          alternative = c("less"),
+                          mu = 0,
+                          conf.level = .95)
     counter_samples[k] <- test_stat$statistic
 
   }

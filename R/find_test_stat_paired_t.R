@@ -20,11 +20,12 @@
 #' @export
 # calculate test statistic (paired t)
 find_test_stat_paired_t<-function(sample_data,variable){
+
   test_stat <- t.test((variable)[sample_data$Z=="1"],
-                      y = (variable)[sample_data$Z=="0"],
-         alternative = c("less"),
-         mu = 0, paired = TRUE,
-         conf.level = 0.95,)
+                        y = (variable)[sample_data$Z=="0"],
+                        alternative = c("less"),
+                        mu = 0, paired = TRUE,
+                        conf.level = .95)
 
   return(invisible(test_stat$statistic))
 }

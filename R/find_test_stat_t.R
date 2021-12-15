@@ -21,10 +21,10 @@
 # calculate test statistic (t test)
 find_test_stat_t<-function(sample_data,variable){
   test_stat <- t.test((variable)[sample_data$Z=="1"],
-                      y = (variable)[sample_data$Z=="0"],
-                      alternative = c("less"),
-                      mu = 0,
-                      conf.level = 0.95,)
+                        y = (variable)[sample_data$Z=="0"],
+                        alternative = c("less"),
+                        mu = 0,
+                        conf.level = .95)
 
   return(invisible(test_stat$statistic))
 }
