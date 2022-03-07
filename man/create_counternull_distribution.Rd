@@ -17,7 +17,7 @@ create_counternull_distribution(
 )
 }
 \arguments{
-\item{sample_data}{Sample data set. Data should have column indicating
+\item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
 measured outcome (variable) should be represented by an additional column.}
 
@@ -47,7 +47,7 @@ Counternull test statistics (Vector)
 }
 \description{
 Resamples data to create counternull distribution.
-Calculate and prints P-value. Returns vector with counternull distribution
+Calculates and prints P-value. Returns vector with counternull distribution
 data points (test statistics created from resampling). Observed test
 statistic is indicated in distribution using dashed black line. No effect is
 indicated with gray dashed line. Counternull value is indicated with red

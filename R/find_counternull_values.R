@@ -8,7 +8,7 @@
 #' value is indicated with red dashed line. Counternull values are
 #' returned if found. 0 is returned otherwise.
 #' @param obs_pval P-value from null distribution
-#' @param sample_data Sample data set. Data should have column indicating
+#' @param sample_data Sample data set. Data should have first column indicating
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
 #' @param extreme Direction which is defined as more extreme for test statistic
@@ -23,7 +23,7 @@
 #' @param high Upper bound of counternull value search
 #' @param test_stat Observed test statistic. (You can use built in functions to
 #' find various test statistics in given dataset)
-#' @param variable Variable measured. Format: sample_data$column
+#' @param variable Variable measured for test statistic. Format: sample_data$column
 #' @param iterations Number of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)
 #' @param pairs Number of pairs of units there are to measure in dataset
@@ -139,7 +139,7 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
                                            test_stat,
                                            variable,iterations)
     null_hist<-hist(perm_samples,breaks=100,col = "gold")
-    plot(null_hist, col="gold",xlim=c(-15000,15000),
+    plot(null_hist, col="gold",xlim=c(min(perm_samples),max(perm_samples)),
          main = paste("Null Distribution"),
     xlab = "Test Statistics")  # first histogram
     abline(v=test_stat,col="black",lty=2, lwd=5)

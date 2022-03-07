@@ -7,11 +7,11 @@
 find_test_stat_paired_t(sample_data, variable)
 }
 \arguments{
-\item{sample_data}{Sample data set. Data should have column indicating
+\item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
 measured outcome (variable) should be represented by an additional column.}
 
-\item{variable}{Variable measured
+\item{variable}{Variable measured for test statistic
 Format: sample_data$column}
 }
 \value{

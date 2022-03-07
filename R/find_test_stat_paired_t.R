@@ -3,10 +3,10 @@
 #' Finds paired t statistic between experimental
 #' (exposed) and control (non exposed) group for measured outcome in dataset
 #'
-#' @param sample_data Sample data set. Data should have column indicating
+#' @param sample_data Sample data set. Data should have first column indicating
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
-#' @param variable Variable measured
+#' @param variable Variable measured for test statistic
 #' Format: sample_data$column
 #' @examples
 #' find_test_stat_paired_t(sample_district_1DS,
@@ -21,8 +21,8 @@
 # calculate test statistic (paired t)
 find_test_stat_paired_t<-function(sample_data,variable){
 
-  test_stat <- t.test((variable)[sample_data$Z=="1"],
-                        y = (variable)[sample_data$Z=="0"],
+  test_stat <- t.test((variable)[sample_data[,1]=="1"],
+                        y = (variable)[sample_data[,1]=="0"],
                         alternative = c("less"),
                         mu = 0, paired = TRUE,
                         conf.level = .95)

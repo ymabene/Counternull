@@ -3,7 +3,7 @@
 #' Finds difference in the average change over time between experimental
 #' (exposed) and control (non exposed) group for measured outcome in dataset
 #'
-#' @param sample_data Sample data set. Data should have column indicating
+#' @param sample_data Sample data set. Data should have first column indicating
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
 #' @param variable Variable measured
@@ -21,9 +21,9 @@
 # calculate test statistic (difference in means)
 find_test_stat_diff_means<-function(sample_data,variable){
   # mean for experimental group (exposed)
-  on_mean <-mean((variable)[sample_data$Z=="1"])
+  on_mean <-mean((variable)[sample_data[,1]=="1"])
   # mean for control group (non exposure)
-  off_mean <-mean((variable)[sample_data$Z=="0"])
+  off_mean <-mean((variable)[sample_data[,1]=="0"])
   # difference
   test_stat<-on_mean - off_mean
   return(invisible(test_stat))

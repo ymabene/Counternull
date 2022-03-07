@@ -20,7 +20,7 @@ find_counternull_set(
 \arguments{
 \item{obs_pvalue}{P-value from null distribution}
 
-\item{sample_data}{Sample data set. Data should have column indicating
+\item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
 measured outcome (variable) should be represented by an additional column.}
 

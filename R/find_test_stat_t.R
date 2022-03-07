@@ -3,7 +3,7 @@
 #' Finds t statistic between experimental
 #' (exposed) and control (non exposed) group for measured outcome in dataset
 #'
-#' @param sample_data Sample data set. Data should have column indicating
+#' @param sample_data Sample data set. Data should have first column indicating
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
 #' @param variable Variable measured
@@ -20,8 +20,8 @@
 #' @export
 # calculate test statistic (t test)
 find_test_stat_t<-function(sample_data,variable){
-  test_stat <- t.test((variable)[sample_data$Z=="1"],
-                        y = (variable)[sample_data$Z=="0"],
+  test_stat <- t.test((variable)[sample_data[,1]=="1"],
+                        y = (variable)[sample_data[,1]=="0"],
                         alternative = c("less"),
                         mu = 0,
                         conf.level = .95)

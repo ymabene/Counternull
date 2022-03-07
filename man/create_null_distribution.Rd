@@ -15,7 +15,7 @@ create_null_distribution(
 )
 }
 \arguments{
-\item{sample_data}{Sample data set. Data should have column indicating
+\item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
 measured outcome (variable) should be represented by an additional column.}
 
@@ -30,7 +30,7 @@ for null distribution}
 
 \item{test_stat}{Observed test statistic.}
 
-\item{variable}{Variable measured
+\item{variable}{Variable measured for test statistic
 Format: sample_data$column}
 
 \item{iterations}{Number of unique arrangements of exposure assignments

@@ -5,7 +5,7 @@
 #' (test statistics created from resampling). Observed test statistic is
 #' indicated in null distribution using dashed black line.
 #'
-#' @param sample_data Sample data set. Data should have column indicating
+#' @param sample_data Sample data set. Data should have first column indicating
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
 #' @param extreme Direction which is defined as more extreme for test statistic
@@ -15,7 +15,7 @@
 #' @param permutation_null_function Function used to create permutation vector
 #' for null distribution
 #' @param test_stat Observed test statistic.
-#' @param variable Variable measured
+#' @param variable Variable measured for test statistic
 #' Format: sample_data$column
 #' @param iterations Number of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)

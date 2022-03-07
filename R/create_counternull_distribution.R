@@ -7,7 +7,7 @@
 #' indicated with gray dashed line. Counternull value is indicated with red
 #' dashed line.
 #'
-#' @param sample_data Sample data set. Data should have column indicating
+#' @param sample_data Sample data set. Data should have first column indicating
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
 #' @param extreme Direction which is defined as more extreme for test statistic
