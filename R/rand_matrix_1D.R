@@ -6,7 +6,7 @@
 #'
 #' @format A matrix with 10000 columns (body camera assignment options):
 #' \describe{
-#' \item{0}{Body Camera On}
-#' \item{1}{Body Camera Off}
+#' \item{1}{Body Camera On}
+#' \item{0}{Body Camera Off}
 #' }
 "rand_matrix_1D"

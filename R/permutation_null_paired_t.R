@@ -5,7 +5,7 @@
 
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
-#' @param variable Variable measured
+#' @param variable Variable measured for test statistic
 #' Format: sample_data$column
 #' @param iterations Numbers of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)
@@ -17,7 +17,7 @@
 #' @export
 
 permutation_null_paired_t<-function(rand_matrix,variable,iterations){
-  # permuation vector with Paired T test statistic
+  # permutation vector with Paired T test statistic
   perm_samples<-matrix(ncol=1,nrow=iterations)
   # creates distribution
   for(k in 1:iterations)

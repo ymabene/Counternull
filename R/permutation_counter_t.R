@@ -9,7 +9,7 @@
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
 #' @param counternull_value Number to test out as counternull value
-#' @param variable Variable measured
+#' @param variable Variable measured for test statistic
 #' Format: sample_data$column
 #' @param iterations Numbers of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)
@@ -41,20 +41,20 @@ permutation_counter_t<-function(sample_data, rand_matrix,
     w<-1 # index for unit whose exposure=1 in sample_data and =0 in rand_matrix
 
     for(j in 1:(2*pairs)){ # calculates tests statistics
-      if(sample_data$Z[j]==1 & rand_matrix[j,k]==1){
+      if(sample_data[j,1]==1 & rand_matrix[j,k]==1){
         obs_on[t]<-variable[j]
         t <-t+1
       }
-      if(sample_data$Z[j]==0 & rand_matrix[j,k]==1){
+      if(sample_data[j,1]==0 & rand_matrix[j,k]==1){
         est_on[u]<-variable[j] + x
         u <-u + 1
       }
 
-      if(sample_data$Z[j]==0 & rand_matrix[j,k]==0){
+      if(sample_data[j,1]==0 & rand_matrix[j,k]==0){
         obs_off[v]<-variable[j]
         v <-v+1
       }
-      if(sample_data$Z[j]==1 & rand_matrix[j,k]==0){
+      if(sample_data[j,1]==1 & rand_matrix[j,k]==0){
         est_off[w]<-variable[j] - x
         w <-w+1
       }

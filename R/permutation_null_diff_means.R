@@ -5,9 +5,9 @@
 
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
-#' @param variable Variable measured
+#' @param variable Variable measured for test statistic
 #' Format: sample_data$column
-#' @param iterations Numbers of unique arrangements of exposure assignments
+#' @param iterations Number of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)
 #' @examples
 #' permutation_null_diff_means(rand_matrix_1DS,
@@ -17,7 +17,7 @@
 #' @export
 
 permutation_null_diff_means<-function(rand_matrix,variable,iterations){
-  # permuation vector with differences of means
+  # permutation vector with differences of means
   perm_samples<-matrix(ncol=1,nrow=iterations)
   # creates distribution
   for(k in 1:iterations)

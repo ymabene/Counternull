@@ -57,10 +57,10 @@ create_counternull_distribution<-function(sample_data,extreme,rand_matrix,
                                           pairs){
   # creates permutation vector with differences of means
   counter_samples<-permutation_counter_function(sample_data,rand_matrix,
-                                                -3323,variable,iterations,pairs)
+                                                counternull_value,variable,iterations,pairs)
   # creates histograms
   counter_hist<-hist(counter_samples,breaks=100,col = "goldenrod",
-                     main=paste("Counterull Distribution"),
+                     main=paste("Counternull Distribution"),
                      xlab="Test Statistics")
   abline(v=test_stat,col="red",lty=2, lwd=5)
   if (extreme==0){ # smaller test statistics are more extreme

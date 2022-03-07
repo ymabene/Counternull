@@ -10,10 +10,10 @@ permutation_null_diff_means(rand_matrix, variable, iterations)
 \item{rand_matrix}{Matrix with unique randomizations for exposure
 assignment}
 
-\item{variable}{Variable measured
+\item{variable}{Variable measured for test statistic
 Format: sample_data$column}
 
-\item{iterations}{Numbers of unique arrangements of exposure assignments
+\item{iterations}{Number of unique arrangements of exposure assignments
 used to generate distribution (At most the number of rows in rand_matrix)}
 }
 \value{
