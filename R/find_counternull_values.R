@@ -18,7 +18,7 @@
 #' @param permutation_null_function Function used to create permutation vector
 #' for null distribution
 #' @param permutation_counter_function Function used to create permutation vector
-#' for counternull distribution
+#' for counternull distribution (must be same test statistic used in null distribution)
 #' @param low Lower bound of counternull value search
 #' @param high Upper bound of counternull value search
 #' @param test_stat Observed test statistic. (You can use built in functions to
