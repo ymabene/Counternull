@@ -23,7 +23,7 @@ assignment}
 
 \item{counternull_value}{Number to test out as counternull value}
 
-\item{variable}{Variable measured
+\item{variable}{Variable measured for test statistic
 Format: sample_data$column}
 
 \item{iterations}{Numbers of unique arrangements of exposure assignments

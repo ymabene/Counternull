@@ -1,7 +1,7 @@
 #' Creates a counternull distribution for a given value
 #'
 #' Resamples data to create counternull distribution.
-#' Calculate and prints P-value. Returns vector with counternull distribution
+#' Calculates and prints P-value. Returns vector with counternull distribution
 #' data points (test statistics created from resampling). Observed test
 #' statistic is indicated in distribution using dashed black line. No effect is
 #' indicated with gray dashed line. Counternull value is indicated with red
@@ -62,7 +62,9 @@ create_counternull_distribution<-function(sample_data,extreme,rand_matrix,
   counter_hist<-hist(counter_samples,breaks=100,col = "goldenrod",
                      main=paste("Counternull Distribution"),
                      xlab="Test Statistics")
-  abline(v=test_stat,col="red",lty=2, lwd=5)
+  abline(v=test_stat,col="black",lty=2, lwd=5)
+  abline(v=counternull_value,col="red",lty=2, lwd=5)
+  abline(v=0,col="gray",lty=2, lwd=5)
   if (extreme==0){ # smaller test statistics are more extreme
     pvalue<-sum(counter_samples>=(test_stat))/iterations
   } else { # larger test statistics are more extreme
