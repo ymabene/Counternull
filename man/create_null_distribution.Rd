@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_null_distribution.R
 \name{create_null_distribution}
 \alias{create_null_distribution}
-\title{Creates a null distribution}
+\title{Creates a null distribution for given statistic}
 \usage{
 create_null_distribution(
   sample_data,
@@ -25,8 +25,10 @@ in distribution (0 for less or 1 for greater)}
 \item{rand_matrix}{Matrix with unique randomizations for exposure
 assignment}
 
-\item{permutation_null_function}{Function used to create permutation vector
-for null distribution}
+\item{permutation_null_function}{Function used to create permutation
+vector (Vector of tests statistics created from sampling that are used as
+datapoints for null distribution. Test statistic much match observed
+test statistic.)}
 
 \item{test_stat}{Observed test statistic.}
 

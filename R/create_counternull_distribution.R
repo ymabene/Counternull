@@ -1,8 +1,9 @@
-#' Creates a counternull distribution for a given value
+#' Creates a counternull distribution for a given counternull value and test
+#' statistic
 #'
-#' Resamples data to create counternull distribution.
+#' Resamples data to create counternull distribution for given test statistic.
 #' Calculates and prints P-value. Returns vector with counternull distribution
-#' data points (test statistics created from resampling). Observed test
+#' data points (test statistics created from sampling). Observed test
 #' statistic is indicated in distribution using dashed black line. No effect is
 #' indicated with gray dashed line. Counternull value is indicated with red
 #' dashed line.
@@ -15,12 +16,15 @@
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
 #' @param permutation_counter_function Function used to create permutation
-#' vector for counternull distribution
+#' vector (Vector of tests statistics created from sampling that are used as
+#' datapoints for counternull distribution. Test statistic much match observed
+#' test statistic.)
 #' @param counternull_value Number to test out as counternull value
 #' @param test_stat Observed test statistic.
 #' @param variable Variable measured Format: sample_data$column
 #' @param iterations Number of unique arrangements of exposure assignments
-#' used to generate distribution (At most the number of rows in rand_matrix)
+#' used for sampling to generate counternull distribution (At most the number
+#' of rows in rand_matrix)
 #' @param pairs Number of pairs of units there are to measure in dataset
 #' (One pair = control unit + experimental unit)
 #' @examples
@@ -55,7 +59,7 @@ create_counternull_distribution<-function(sample_data,extreme,rand_matrix,
                                           counternull_value,test_stat,
                                           variable, iterations,
                                           pairs){
-  # creates permutation vector with differences of means
+  # creates permutation vector for given test statistic
   counter_samples<-permutation_counter_function(sample_data,rand_matrix,
                                                 counternull_value,variable,iterations,pairs)
   # creates histograms

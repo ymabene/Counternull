@@ -2,7 +2,8 @@
 % Please edit documentation in R/create_counternull_distribution.R
 \name{create_counternull_distribution}
 \alias{create_counternull_distribution}
-\title{Creates a counternull distribution for a given value}
+\title{Creates a counternull distribution for a given counternull value and test
+statistic}
 \usage{
 create_counternull_distribution(
   sample_data,
@@ -28,7 +29,9 @@ in distribution (0 for less or 1 for greater)}
 assignment}
 
 \item{permutation_counter_function}{Function used to create permutation
-vector for counternull distribution}
+vector (Vector of tests statistics created from sampling that are used as
+datapoints for counternull distribution. Test statistic much match observed
+test statistic.)}
 
 \item{counternull_value}{Number to test out as counternull value}
 
@@ -37,7 +40,8 @@ vector for counternull distribution}
 \item{variable}{Variable measured Format: sample_data$column}
 
 \item{iterations}{Number of unique arrangements of exposure assignments
-used to generate distribution (At most the number of rows in rand_matrix)}
+used for sampling to generate counternull distribution (At most the number
+of rows in rand_matrix)}
 
 \item{pairs}{Number of pairs of units there are to measure in dataset
 (One pair = control unit + experimental unit)}
@@ -46,9 +50,9 @@ used to generate distribution (At most the number of rows in rand_matrix)}
 Counternull test statistics (Vector)
 }
 \description{
-Resamples data to create counternull distribution.
+Resamples data to create counternull distribution for given test statistic.
 Calculates and prints P-value. Returns vector with counternull distribution
-data points (test statistics created from resampling). Observed test
+data points (test statistics created from sampling). Observed test
 statistic is indicated in distribution using dashed black line. No effect is
 indicated with gray dashed line. Counternull value is indicated with red
 dashed line.

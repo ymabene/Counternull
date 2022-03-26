@@ -32,11 +32,13 @@ in distribution (0 for less or 1 for greater)}
 \item{rand_matrix}{Matrix with all possible randomizations of exposure
 assignment}
 
-\item{permutation_null_function}{Function used to create permutation vector
-for null distribution}
+\item{permutation_null_function}{Function used to create permutation
+vector (Vector of tests statistics created from sampling that are used as
+datapoints for null and counternull distribution. Test statistic much match observed
+test statistic.)}
 
 \item{permutation_counter_function}{Function used to create permutation vector
-for counternull distribution}
+for counternull distribution (must be same test statistic used in null distribution)}
 
 \item{low}{Lower bound of counternull value search}
 
@@ -57,9 +59,9 @@ used to generate distribution (At most the number of rows in rand_matrix)}
 Vector of Counternull Values (Numeric 0 if none are found)
 }
 \description{
-Finds and prints full range of counternull values, the test statistic
-and  p-value along with null and counternull distribution if counternull
-values are found. Otherwise only null distribution is displayed.
+Finds and prints full range of counternull values, the given test
+statistic and  p-value along with null and counternull distribution
+if counternull values are found. Otherwise only null distribution is displayed.
 Observed test statistic is indicated in distribution using dashed
 black line. No effect is indicated with gray dashed line. Counternull
 value is indicated with red dashed line. Counternull values are

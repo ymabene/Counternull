@@ -1,4 +1,4 @@
-#' Creates a null distribution
+#' Creates a null distribution for given statistic
 #'
 #' Resamples data to create null distribution. Calculates and prints observed
 #' test statistic and P-value. Returns vector with null distribution data points
@@ -12,8 +12,10 @@
 #' in distribution (0 for less or 1 for greater)
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
-#' @param permutation_null_function Function used to create permutation vector
-#' for null distribution
+#' @param permutation_null_function Function used to create permutation
+#' vector (Vector of tests statistics created from sampling that are used as
+#' datapoints for null distribution. Test statistic much match observed
+#' test statistic.)
 #' @param test_stat Observed test statistic.
 #' @param variable Variable measured for test statistic
 #' Format: sample_data$column
