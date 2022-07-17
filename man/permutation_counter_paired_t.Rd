@@ -16,7 +16,8 @@ permutation_counter_paired_t(
 \arguments{
 \item{sample_data}{Sample data set. Data should have column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
-measured outcome (variable) should be represented by an additional column.}
+measured outcome (variable) should be represented by an additional column.
+Data must be ordered so that paired units are in subsequent rows.}
 
 \item{rand_matrix}{Matrix with unique randomizations for exposure
 assignment}
@@ -24,7 +25,7 @@ assignment}
 \item{counternull_value}{Number to test out as counternull value}
 
 \item{variable}{Variable measured for test statistic
-Format: sample_data$column}
+(Format: sample_data$column)}
 
 \item{iterations}{Numbers of unique arrangements of exposure assignments
 used to generate distribution (At most the number of rows in rand_matrix)}

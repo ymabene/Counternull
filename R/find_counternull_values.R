@@ -1,7 +1,7 @@
 #' Finds counternull values
 #'
 #' Finds and prints full range of counternull values, the given test
-#' statistic and  p-value along with null and counternull distribution
+#' statistic and  p-value. Plots null and counternull distribution
 #' if counternull values are found. Otherwise only null distribution is displayed.
 #' Observed test statistic is indicated in distribution using dashed
 #' black line. No effect is indicated with gray dashed line. Counternull
@@ -11,6 +11,8 @@
 #' @param sample_data Sample data set. Data should have first column indicating
 #' exposure (1) or non exposure (0) for each group (row) that is measured. Each
 #' measured outcome (variable) should be represented by an additional column.
+#' For paired randomization, data must be ordered so that paired units are in
+#' subsequent rows.
 #' @param extreme Direction which is defined as more extreme for test statistic
 #' in distribution (0 for less or 1 for greater)
 #' @param rand_matrix Matrix with all possible randomizations of exposure
@@ -25,11 +27,15 @@
 #' @param high Upper bound of counternull value search
 #' @param test_stat Observed test statistic. (You can use built in functions to
 #' find various test statistics in given dataset)
-#' @param variable Variable measured for test statistic. Format: sample_data$column
+#' @param variable Variable measured for test statistic. (Format: sample_data$column)
 #' @param iterations Number of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)
 #' @param pairs Number of pairs of units there are to measure in dataset
 #' (One pair = control unit + experimental unit)
+#' @param round_p Number of significant digits P-value should be rounded to
+#' @param round_c Number of decimal places counternull values should be rounded to
+#' @param increment Value to increment numbers by to find counternull values
+#' (Smaller numbers increase accuracy and run time for retrieving counternull values)
 #' @examples
 #' \donttest{
 #' find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
@@ -38,7 +44,7 @@
 #' sample_district_1DS$charge_prosecuted_1000_rate_post -
 #' sample_district_1DS$charge_prosecuted_1000_rate_pre),
 #' sample_district_1DS$charge_prosecuted_1000_rate_post-
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
+#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
 #'
 #' find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
 #' permutation_null_t,permutation_counter_t,
@@ -46,7 +52,7 @@
 #' sample_district_1DS$charge_prosecuted_1000_rate_post -
 #' sample_district_1DS$charge_prosecuted_1000_rate_pre),
 #' sample_district_1DS$charge_prosecuted_1000_rate_post-
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
+#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
 #'
 #' find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
 #' permutation_null_paired_t,permutation_counter_paired_t,
@@ -54,7 +60,7 @@
 #' sample_district_1DS$charge_prosecuted_1000_rate_post -
 #' sample_district_1DS$charge_prosecuted_1000_rate_pre),
 #' sample_district_1DS$charge_prosecuted_1000_rate_post-
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
+#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
 #' }
 #' @return Vector of Counternull Values (Numeric 0 if none are found)
 #' @export
@@ -63,9 +69,10 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
                                   permutation_null_function,
                                   permutation_counter_function,low,
                                   high,test_stat,
-                                  variable,iterations,pairs){
+                                  variable,iterations,pairs,round_p,
+                                  round_c, increment){
   counter_samples<-0
-  counternull_value<-2*test_stat # estimated counternull value
+  counternull_value<-round(2*test_stat,round_c) # estimated counternull value
   while (low <= high) {
     counter_samples<-create_counternull_distribution_no_hist(sample_data,
                                                              rand_matrix,
@@ -73,7 +80,8 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
                                                            counternull_value,
                                                              test_stat,
                                                              variable,
-                                                            iterations,pairs)
+                                                           iterations,pairs)
+
     if (extreme==0){ # larger test statistics are more extreme.
       pval<-sum(counter_samples>=(test_stat))/iterations
 
@@ -81,7 +89,7 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
       pval<-sum(counter_samples<=(test_stat))/iterations
 
     }
-    if (pval == obs_pval) { # counternull value is identified
+    if (signif(pval,round_p) == signif(obs_pval,round_p)) { # counternull value is identified
       start<-counternull_value
       # find counternull range
       counternull_values<-find_counternull_set(obs_pval,sample_data,extreme,
@@ -90,7 +98,8 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
                                                counternull_value,
                                                test_stat,
                                                variable,
-                                               iterations,pairs)
+                                               iterations,pairs,round_p,
+                                               round_c,increment)
       unique(counternull_values)
       sort(counternull_values)
       print(unique(counternull_values))
@@ -104,7 +113,7 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
       counter_hist<-hist(counter_samples,breaks=100,col = "goldenrod",
                          main = paste("Counternull Distribution"),
                          xlab = "Test Statistics")
-      range<-c(perm_samples,counter_samples)
+      range<-c(perm_samples,counter_samples,0)
       max_range<-max(range)
       min_range<-min(range)
       plot(null_hist, col="gold", xlim=c(min_range,max_range),
@@ -116,21 +125,21 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
       abline(v=0,col="gray",lty=2, lwd=5)
       break
 
-    } else if (pval < obs_pval) {
+    } else if (signif(pval,round_p) < signif(obs_pval,round_p)) {
         if (extreme==0){
-          low<-counternull_value + 1 # only search larger numbers
+          low<-counternull_value + increment # only search larger numbers
         } else {
-          high<-counternull_value - 1 # only search smaller numbers
+          high<-counternull_value - increment # only search smaller numbers
         }
-        counternull_value<-(low + high)%/%2
+        counternull_value<-round((low + high)/2,round_c)
 
     } else {  # pval > obs_pval
         if (extreme==0){
-          high<-counternull_value - 1 # only search smaller numbers
+          high<-counternull_value - increment # only search smaller numbers
         } else {
-          low<-counternull_value - 1 # only search larger numbers
+          low<-counternull_value + increment # only search larger numbers
         }
-        counternull_value<-(low + high)%/%2
+        counternull_value<-round((low + high)/2,round_c)
     }
   }
   if(low > high){ # no remaining numbers to search
@@ -149,3 +158,4 @@ find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
   }
   return(invisible(counter_samples))
 }
+

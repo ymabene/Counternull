@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_counternull_distribution.R
 \name{create_counternull_distribution}
 \alias{create_counternull_distribution}
-\title{Creates a counternull distribution for a given counternull value and test
+\title{Plots a counternull distribution for a given counternull value and test
 statistic}
 \usage{
 create_counternull_distribution(
@@ -20,7 +20,8 @@ create_counternull_distribution(
 \arguments{
 \item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
-measured outcome (variable) should be represented by an additional column.}
+measured outcome (variable) should be represented by an additional column.
+Data must be ordered so that paired units are in subsequent rows.}
 
 \item{extreme}{Direction which is defined as more extreme for test statistic
 in distribution (0 for less or 1 for greater)}
@@ -37,7 +38,7 @@ test statistic.)}
 
 \item{test_stat}{Observed test statistic.}
 
-\item{variable}{Variable measured Format: sample_data$column}
+\item{variable}{Variable measured (Format: sample_data$column)}
 
 \item{iterations}{Number of unique arrangements of exposure assignments
 used for sampling to generate counternull distribution (At most the number
@@ -50,12 +51,12 @@ of rows in rand_matrix)}
 Counternull test statistics (Vector)
 }
 \description{
-Resamples data to create counternull distribution for given test statistic.
-Calculates and prints P-value. Returns vector with counternull distribution
-data points (test statistics created from sampling). Observed test
-statistic is indicated in distribution using dashed black line. No effect is
-indicated with gray dashed line. Counternull value is indicated with red
-dashed line.
+Resamples data to create and plot counternull distribution for given test
+statistic. Calculates and prints P-value. Returns vector with counternull
+distribution data points (test statistics created from sampling). Observed
+test statistic is indicated in distribution using dashed black line. No
+ effect is indicated with gray dashed line. Counternull value is indicated
+ with red dashed line.
 }
 \examples{
 create_counternull_distribution(sample_district_1DS,0,rand_matrix_1DS,

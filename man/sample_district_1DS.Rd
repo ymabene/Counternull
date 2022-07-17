@@ -4,7 +4,7 @@
 \name{sample_district_1DS}
 \alias{sample_district_1DS}
 \title{Sample data for Police District1DS revealing body camera assignment
-and behavioral Outcomes}
+and behavioral outcomes}
 \format{
 A table with 225 behavioral outcomes:
 \describe{

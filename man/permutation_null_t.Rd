@@ -11,7 +11,7 @@ permutation_null_t(rand_matrix, variable, iterations)
 assignment}
 
 \item{variable}{Variable measured
-Format: sample_data$column}
+(Format: sample_data$column)}
 
 \item{iterations}{Numbers of unique arrangements of exposure assignments
 used to generate distribution (At most the number of rows in rand_matrix)}

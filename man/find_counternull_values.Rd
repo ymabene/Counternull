@@ -16,7 +16,10 @@ find_counternull_values(
   test_stat,
   variable,
   iterations,
-  pairs
+  pairs,
+  round_p,
+  round_c,
+  increment
 )
 }
 \arguments{
@@ -24,7 +27,8 @@ find_counternull_values(
 
 \item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
-measured outcome (variable) should be represented by an additional column.}
+measured outcome (variable) should be represented by an additional column.
+Data must be ordered so that paired units are in subsequent rows.}
 
 \item{extreme}{Direction which is defined as more extreme for test statistic
 in distribution (0 for less or 1 for greater)}
@@ -47,20 +51,27 @@ for counternull distribution (must be same test statistic used in null distribut
 \item{test_stat}{Observed test statistic. (You can use built in functions to
 find various test statistics in given dataset)}
 
-\item{variable}{Variable measured for test statistic. Format: sample_data$column}
+\item{variable}{Variable measured for test statistic. (Format: sample_data$column)}
 
 \item{iterations}{Number of unique arrangements of exposure assignments
 used to generate distribution (At most the number of rows in rand_matrix)}
 
 \item{pairs}{Number of pairs of units there are to measure in dataset
 (One pair = control unit + experimental unit)}
+
+\item{round_p}{Number of significant digits P-value should be rounded to}
+
+\item{round_c}{Number of decimal places counternull values should be rounded to}
+
+\item{increment}{Value to increment numbers by to find counternull values
+(Smaller numbers increase accuracy and run time for retrieving counternull values)}
 }
 \value{
 Vector of Counternull Values (Numeric 0 if none are found)
 }
 \description{
 Finds and prints full range of counternull values, the given test
-statistic and  p-value along with null and counternull distribution
+statistic and  p-value. Plots null and counternull distribution
 if counternull values are found. Otherwise only null distribution is displayed.
 Observed test statistic is indicated in distribution using dashed
 black line. No effect is indicated with gray dashed line. Counternull
@@ -75,7 +86,7 @@ permutation_null_diff_means,permutation_counter_diff_means,
 sample_district_1DS$charge_prosecuted_1000_rate_post -
 sample_district_1DS$charge_prosecuted_1000_rate_pre),
 sample_district_1DS$charge_prosecuted_1000_rate_post-
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
+sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
 
 find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
 permutation_null_t,permutation_counter_t,
@@ -83,7 +94,7 @@ permutation_null_t,permutation_counter_t,
 sample_district_1DS$charge_prosecuted_1000_rate_post -
 sample_district_1DS$charge_prosecuted_1000_rate_pre),
 sample_district_1DS$charge_prosecuted_1000_rate_post-
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
+sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
 
 find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
 permutation_null_paired_t,permutation_counter_paired_t,
@@ -91,6 +102,6 @@ permutation_null_paired_t,permutation_counter_paired_t,
 sample_district_1DS$charge_prosecuted_1000_rate_post -
 sample_district_1DS$charge_prosecuted_1000_rate_pre),
 sample_district_1DS$charge_prosecuted_1000_rate_post-
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
+sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
 }
 }

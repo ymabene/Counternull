@@ -2,7 +2,7 @@
 % Please edit documentation in R/permutation_null_paired_t.R
 \name{permutation_null_paired_t}
 \alias{permutation_null_paired_t}
-\title{Creates Paired T statistic vector for null distribution}
+\title{Creates paired T statistic vector for null distribution}
 \usage{
 permutation_null_paired_t(rand_matrix, variable, iterations)
 }
@@ -11,7 +11,7 @@ permutation_null_paired_t(rand_matrix, variable, iterations)
 assignment}
 
 \item{variable}{Variable measured for test statistic
-Format: sample_data$column}
+(Format: sample_data$column)}
 
 \item{iterations}{Numbers of unique arrangements of exposure assignments
 used to generate distribution (At most the number of rows in rand_matrix)}

@@ -1,4 +1,4 @@
-#' Creates Paired T statistic vector for null distribution
+#' Creates paired T statistic vector for null distribution
 #'
 #' Resamples data to create null distribution. Returns vector with test
 #' statistics in null distribution.
@@ -6,7 +6,7 @@
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
 #' @param variable Variable measured for test statistic
-#' Format: sample_data$column
+#' (Format: sample_data$column)
 #' @param iterations Numbers of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)
 #' @examples

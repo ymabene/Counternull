@@ -14,7 +14,10 @@ find_counternull_set(
   test_stat,
   variable,
   iterations,
-  pairs
+  pairs,
+  round_p,
+  round_c,
+  increment
 )
 }
 \arguments{
@@ -42,6 +45,13 @@ used to generate distribution (At most the number of rows in rand_matrix)}
 
 \item{pairs}{Number of pairs of units there are to measure in dataset
 (One pair=control unit + experimental unit)}
+
+\item{round_p}{Number of significant digits P-value should be rounded to}
+
+\item{round_c}{Number of significant digits counternull values
+should be rounded to}
+
+\item{increment}{Value to increment numbers by to find counternull values}
 
 \item{permuation_counter_function}{Function used to create permutation vector
 for counternull distribution}

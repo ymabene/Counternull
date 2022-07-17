@@ -9,10 +9,11 @@ find_test_stat_diff_means(sample_data, variable)
 \arguments{
 \item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
-measured outcome (variable) should be represented by an additional column.}
+measured outcome (variable) should be represented by an additional column.
+Data must be ordered so that paired units are in subsequent rows.}
 
 \item{variable}{Variable measured
-Format: sample_data$column}
+(Format: sample_data$column)}
 }
 \value{
 Observed Test Statistic (Numeric)

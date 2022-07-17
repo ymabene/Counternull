@@ -2,23 +2,24 @@
 % Please edit documentation in R/find_test_stat_t.R
 \name{find_test_stat_t}
 \alias{find_test_stat_t}
-\title{Finds t statistic (observed test statistic) for data set}
+\title{Finds T statistic (observed test statistic) for data set}
 \usage{
 find_test_stat_t(sample_data, variable)
 }
 \arguments{
 \item{sample_data}{Sample data set. Data should have first column indicating
 exposure (1) or non exposure (0) for each group (row) that is measured. Each
-measured outcome (variable) should be represented by an additional column.}
+measured outcome (variable) should be represented by an additional column.
+Data must be ordered so that paired units are in subsequent rows.}
 
 \item{variable}{Variable measured
-Format: sample_data$column}
+(Format: sample_data$column)}
 }
 \value{
 Observed Test Statistic (Numeric)
 }
 \description{
-Finds t statistic between experimental
+Finds T statistic between experimental
 (exposed) and control (non exposed) group for measured outcome in dataset
 }
 \examples{

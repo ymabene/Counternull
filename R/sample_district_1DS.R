@@ -1,5 +1,5 @@
 #' @title Sample data for Police District1DS revealing body camera assignment
-#' and behavioral Outcomes
+#' and behavioral outcomes
 #'
 #' @description This CSV dataset is taken from a study measuring impact of
 #' body cameras on police behavioral outcomes in Washington D.C. police

@@ -5,3 +5,4 @@ sample_district_1DS<-subset(sample_data,district=="1Ds") # shows data in sample 
 sample_district_1DS<-sample_district_1DS[order(sample_district_1DS$block_id),] # puts data in order of block ID
 readr::write_csv(sample_district_1DS, file="inst/extdata/sample_district_1DS.csv")
 usethis::use_data(sample_district_1DS, compress = "xz")
+

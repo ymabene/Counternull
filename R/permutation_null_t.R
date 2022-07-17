@@ -6,7 +6,7 @@
 #' @param rand_matrix Matrix with unique randomizations for exposure
 #' assignment
 #' @param variable Variable measured
-#' Format: sample_data$column
+#' (Format: sample_data$column)
 #' @param iterations Numbers of unique arrangements of exposure assignments
 #' used to generate distribution (At most the number of rows in rand_matrix)
 #' @examples
@@ -17,18 +17,18 @@
 #' @export
 
 permutation_null_t<-function(rand_matrix,variable,iterations){
-  # permuation vector with T test statistic
-  perm_samples<-matrix(ncol=1,nrow=iterations)
-  # creates distribution
-  for(k in 1:iterations)
-  {
-    on<-(variable[rand_matrix[,k]==1]) # exposed
-    off<-(variable[rand_matrix[,k]==0]) # not exposed
-      test_stat <- t.test(on, off,
-                          alternative = c("less"),
-                          mu = 0,
-                          conf.level = .95)
-    perm_samples[k] <- test_stat$statistic
-  }
-  return(invisible(perm_samples))
+# permutation vector with T test statistic
+perm_samples<-matrix(ncol=1,nrow=iterations)
+# creates distribution
+for(k in 1:iterations)
+{
+  on<-(variable[rand_matrix[,k]==1]) # exposed
+  off<-(variable[rand_matrix[,k]==0]) # not exposed
+  test_stat <- t.test(on, off,
+                      alternative = c("less"),
+                      mu = 0,
+                      conf.level = .95)
+  perm_samples[k] <- test_stat$statistic
+}
+return(invisible(perm_samples))
 }

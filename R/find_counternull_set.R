@@ -19,21 +19,27 @@
 #' used to generate distribution (At most the number of rows in rand_matrix)
 #' @param pairs Number of pairs of units there are to measure in dataset
 #' (One pair=control unit + experimental unit)
+#' @param round_p Number of significant digits P-value should be rounded to
+#' @param round_c Number of significant digits counternull values
+#' should be rounded to
+#' @param increment Value to increment numbers by to find counternull values
 #' @return Vector of counternull values
 #' @keywords internal
 
 find_counternull_set<-function(obs_pvalue,sample_data,extreme,rand_matrix,
                                permutation_counter_function,
                                counternull_value,test_stat,
-                               variable, iterations,pairs){
+                               variable, iterations,pairs,round_p,
+                               round_c,increment){
   start<-counternull_value
   counternull_values<-start
   pval<-obs_pvalue
   i<-1
-  while (pval == obs_pvalue){ # Tries numbers larger than counternull value
+  while (signif(pval,round_p) == signif(obs_pvalue,round_p)){ # Tries numbers larger
+    # than counternull value
     counternull_values<-c(counternull_values,counternull_value)
     i<-i+1
-    counternull_value<-counternull_value + 1
+    counternull_value<-round(counternull_value + increment,round_c)
     counter_samples<-create_counternull_distribution_no_hist(sample_data,
                                                              rand_matrix,
                                                   permutation_counter_function,
@@ -51,10 +57,10 @@ find_counternull_set<-function(obs_pvalue,sample_data,extreme,rand_matrix,
   # Counternull value was too large. Tries numbers smaller than starting value
   counternull_value<-start
   pval<-obs_pvalue
-  while (pval == obs_pvalue) {
+  while (signif(pval,round_p) == signif(obs_pvalue,round_p)) {
     counternull_values<-c(counternull_values,counternull_value)
     i<-i+1
-    counternull_value<-counternull_value - 1
+    counternull_value<-round(counternull_value - increment,round_c)
     counter_samples<-create_counternull_distribution_no_hist(sample_data,
                                                              rand_matrix,
                                                   permutation_counter_function,

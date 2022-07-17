@@ -29,7 +29,7 @@ create_counternull_distribution_no_hist<-function(sample_data,rand_matrix,
                                                 iterations,pairs){
   # creates permutation vector with differences of means
   counter_samples<-permutation_counter_function(sample_data,rand_matrix,
-                                                  counternull_value,variable,
-                                                  iterations,pairs)
+                                                counternull_value,variable,
+                                                iterations,pairs)
   return(invisible(counter_samples))
 }
