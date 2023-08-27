@@ -1,161 +1,319 @@
-#' Finds counternull values
+#' Find Counternull Values
 #'
-#' Finds and prints full range of counternull values, the given test
-#' statistic and  p-value. Plots null and counternull distribution
-#' if counternull values are found. Otherwise only null distribution is displayed.
-#' Observed test statistic is indicated in distribution using dashed
-#' black line. No effect is indicated with gray dashed line. Counternull
-#' value is indicated with red dashed line. Counternull values are
-#' returned if found. 0 is returned otherwise.
-#' @param obs_pval P-value from null distribution
-#' @param sample_data Sample data set. Data should have first column indicating
-#' exposure (1) or non exposure (0) for each group (row) that is measured. Each
-#' measured outcome (variable) should be represented by an additional column.
-#' For paired randomization, data must be ordered so that paired units are in
-#' subsequent rows.
-#' @param extreme Direction which is defined as more extreme for test statistic
-#' in distribution (0 for less or 1 for greater)
-#' @param rand_matrix Matrix with all possible randomizations of exposure
-#' assignment
-#' @param permutation_null_function Function used to create permutation
-#' vector (Vector of tests statistics created from sampling that are used as
-#' datapoints for null and counternull distribution. Test statistic much match observed
-#' test statistic.)
-#' @param permutation_counter_function Function used to create permutation vector
-#' for counternull distribution (must be same test statistic used in null distribution)
-#' @param low Lower bound of counternull value search
-#' @param high Upper bound of counternull value search
-#' @param test_stat Observed test statistic. (You can use built in functions to
-#' find various test statistics in given dataset)
-#' @param variable Variable measured for test statistic. (Format: sample_data$column)
-#' @param iterations Number of unique arrangements of exposure assignments
-#' used to generate distribution (At most the number of rows in rand_matrix)
-#' @param pairs Number of pairs of units there are to measure in dataset
-#' (One pair = control unit + experimental unit)
-#' @param round_p Number of significant digits P-value should be rounded to
-#' @param round_c Number of decimal places counternull values should be rounded to
-#' @param increment Value to increment numbers by to find counternull values
-#' (Smaller numbers increase accuracy and run time for retrieving counternull values)
+#' Retrieves counternull value set and returns object of "counternull" class.
+#' @param null_r "null_rand" object corresponding to data
+#' @param counts Vector containing lower and upper bounds for number of
+#' test statistics more extreme than observed test statistic in
+#' counternull randomization distribution (optional)
+#' @param bw Histogram bin width (optional)
+#'
 #' @examples
 #' \donttest{
-#' find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
-#' permutation_null_diff_means,permutation_counter_diff_means,
-#' -8000,0, find_test_stat_diff_means(sample_district_1DS,
-#' sample_district_1DS$charge_prosecuted_1000_rate_post -
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre),
-#' sample_district_1DS$charge_prosecuted_1000_rate_post-
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
+#' n_r = create_null_rand(sample_data$turn_angle, sample_data$w,
+#' sample_matrix, test_stat = c("diffmeans"))
+#' c = find_counternull_values(n_r)
+#' summary(c)
+#' plot(c)
+#' c = find_counternull_values(n_r, c(56,60))
+#' summary(c)
+#'}
 #'
-#' find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
-#' permutation_null_t,permutation_counter_t,
-#' -8000,0, find_test_stat_t(sample_district_1DS,
-#' sample_district_1DS$charge_prosecuted_1000_rate_post -
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre),
-#' sample_district_1DS$charge_prosecuted_1000_rate_post-
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
-#'
-#' find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
-#' permutation_null_paired_t,permutation_counter_paired_t,
-#' -8000,0, find_test_stat_paired_t(sample_district_1DS,
-#' sample_district_1DS$charge_prosecuted_1000_rate_post -
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre),
-#' sample_district_1DS$charge_prosecuted_1000_rate_post-
-#' sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
+#' @return Class "counternull" with 6 entries:
+#' \describe{
+#' \item{counternull_perm}{Counternull test statistics for first counternull set}
+#' \item{low}{Counternull test statistics for second counternull set}
+#' \item{high}{Lower bound of counternull set}
+#' \item{counternull_perm_two}{Upper bound of counternull set}
+#' \item{low_two}{Lower bound of second counternull set}
+#' \item{high_two}{Upper bound of second counternull set}
+#' \item{null_rand}{Specified "null_rand" object}
+#' \item{bw}{Specified bin width}
 #' }
-#' @return Vector of Counternull Values (Numeric 0 if none are found)
+#' @details
+#' Call summary on "counternull" class to retrieve range of counternull values.
+#' Call plot on "counternull" class for visualization
+#' of counternull distribution.
+#'
+#' Argument "counts" must contain whole numbers for bounds.Lower bound must be
+#' smaller than upper bound. If argument is not specified, counternull values
+#' will be obtained using the "counts" argument from the specified "null_rand"
+#' argument.
+#'
+#' If no counternull values are found, all entries in class are set to null.
+#' If only one set of counternull values are found, "perm_two", low_two"
+#' and "high_two" are set to null.
+#' @references \doi{10.1111/j.1467-9280.1994.tb00281.x}
 #' @export
 
-find_counternull_values<-function(obs_pval,sample_data,extreme,rand_matrix,
-                                  permutation_null_function,
-                                  permutation_counter_function,low,
-                                  high,test_stat,
-                                  variable,iterations,pairs,round_p,
-                                  round_c, increment){
-  counter_samples<-0
-  counternull_value<-round(2*test_stat,round_c) # estimated counternull value
-  while (low <= high) {
-    counter_samples<-create_counternull_distribution_no_hist(sample_data,
-                                                             rand_matrix,
-                                                 permutation_counter_function,
-                                                           counternull_value,
-                                                             test_stat,
-                                                             variable,
-                                                           iterations,pairs)
 
-    if (extreme==0){ # larger test statistics are more extreme.
-      pval<-sum(counter_samples>=(test_stat))/iterations
+find_counternull_values=function(null_r, counts = NULL, bw = NULL){
 
-    } else { # smaller test statistics are more extreme
-      pval<-sum(counter_samples<=(test_stat))/iterations
+  if(!inherits(null_r,"null_rand")){
+    stop('Argument "null_r" must be of class "null_rand".')
+  }
+
+  if(!is.null(bw)){
+    if(!is.numeric(bw) | length(bw) != 1 | bw <= 0){
+      stop('Argument "bw" must be a positive numeric scalar.')
+    }
+
+  }
+
+  if(is.null(counts)){
+    counts = null_r$counts
+  } else {
+    if(length(counts) != 2){
+      stop('Argument "counts" must be length 2.')
+    }
+    if(!is.numeric(counts)){
+      stop('Argument "counts" must be a numeric.')
+    }
+    if(!(counts[1] <= counts[2])){
+      stop('Lower bound must be <= to upper bound in argument "counts".')
+    }
+    if((counts[1] < 0) | (counts[2] > length(null_r$null_dist))){
+      stop('Argument "counts" must specify a non-negative range of numbers
+      no larger than the number of permutations within argument "null_rand".')
+    }
+
+    counts = seq(round(counts[1]), round(counts[2]), by = 1)
+
+    if(length(counts) >= .10 * length(null_r$null_dist)){
+      warning('Argument "counts" exceeds 10% of null
+              randomization distribution.')
+    }
+
+  }
+
+  # bounds are 4 times the observed effect size
+  low = 1
+  high = 10000
+  search=seq(-4*abs(null_r$t_obs),4*abs(null_r$t_obs),
+              8*abs(null_r$t_obs)/(high-1))
+
+  if(null_r$alternative == "two-sided"){
+    s_p=search[search>=0]
+    s_n=search[search<0]
+    p=find_counternull_values_int(counts, search, null_r$t_obs, null_r$y,
+                                   null_r$w, null_r$alternative,
+                                   null_r$rand_matrix,null_r$test_stat,
+                                   null_r$fun, s=0)
+
+    n=find_counternull_values_int(counts, search, null_r$t_obs, null_r$y,
+                                   null_r$w, null_r$alternative,
+                                  null_r$rand_matrix, null_r$test_stat,
+                                   null_r$fun, s=1)
+    if((!is.null(p)) & (!is.null(n))){
+
+      # combine the two lists
+      c_ob = list(counternull_perm = p$perm, low = p$low, high = p$high,
+                  counternull_perm_two= n$perm,
+                  low_two = n$low, high_two = n$high, null_r = null_r,
+                  bw = bw)
+
+
+    } else if((!is.null(p)) & (is.null(n))){
+
+      c_ob = list(counternull_perm = p$perm, low = p$low, high = p$high,
+                  counternull_perm_two = NULL,
+                  low_two = NULL, high_two = NULL, null_r = null_r,
+                  bw = bw)
+
+
+
+    } else if((is.null(p)) & (!is.null(n))){
+
+      c_ob = list(counternull_perm = NULL, low = NULL, high = NULL,
+                  counternull_perm_two = n$perm,
+                  low_two= n$low, high_two = n$high, null_r = null_r,
+                  bw = bw)
+
+
+    } else{
+
+      c_ob = list(counternull_perm = NULL, low = NULL, high = NULL,
+                  counternull_perm_two = NULL,
+                  low_two= NULL, high_two = NULL, null_r = null_r,
+                  bw = bw)
+
 
     }
-    if (signif(pval,round_p) == signif(obs_pval,round_p)) { # counternull value is identified
-      start<-counternull_value
-      # find counternull range
-      counternull_values<-find_counternull_set(obs_pval,sample_data,extreme,
-                                               rand_matrix,
-                                               permutation_counter_function,
-                                               counternull_value,
-                                               test_stat,
-                                               variable,
-                                               iterations,pairs,round_p,
-                                               round_c,increment)
-      unique(counternull_values)
-      sort(counternull_values)
-      print(unique(counternull_values))
-      # create histograms
-      perm_samples<-create_null_distribution(sample_data,extreme,rand_matrix,
-                                             permutation_null_function,test_stat,
-                                             variable,
-                                             iterations)
-      null_hist<-hist(perm_samples,breaks=100,col = "gold",
-                      main = paste("Null Distribution"), xlab = "Test Statistics")
-      counter_hist<-hist(counter_samples,breaks=100,col = "goldenrod",
-                         main = paste("Counternull Distribution"),
-                         xlab = "Test Statistics")
-      range<-c(perm_samples,counter_samples,0)
-      max_range<-max(range)
-      min_range<-min(range)
-      plot(null_hist, col="gold", xlim=c(min_range,max_range),
-           main = paste("Counternull and Null Distribution"),
-            xlab = "Test Statistics")  # first histogram
-      plot(counter_hist, col="goldenrod", xlim=c(min_range,max_range),add=T)  # second
-      abline(v=test_stat,col="black",lty=2, lwd=5)
-      abline(v=start,col="red",lty=2, lwd=5)
-      abline(v=0,col="gray",lty=2, lwd=5)
-      break
 
-    } else if (signif(pval,round_p) < signif(obs_pval,round_p)) {
-        if (extreme==0){
-          low<-counternull_value + increment # only search larger numbers
-        } else {
-          high<-counternull_value - increment # only search smaller numbers
-        }
-        counternull_value<-round((low + high)/2,round_c)
 
-    } else {  # pval > obs_pval
-        if (extreme==0){
-          high<-counternull_value - increment # only search smaller numbers
-        } else {
-          low<-counternull_value + increment # only search larger numbers
-        }
-        counternull_value<-round((low + high)/2,round_c)
+  } else{
+    c <- find_counternull_values_int(counts, search, null_r$t_obs,
+                                     null_r$y,null_r$w,
+                                 null_r$alternative,null_r$rand_matrix,
+                                 null_r$test_stat, null_r$fun, s=0)
+    if(!is.null(c)){
+      c_ob = list(counternull_perm = c$perm, low = c$low, high = c$high,
+                  counternull_perm_two = NULL,
+                  low_two = NULL, high_two = NULL, null_r = null_r,
+                  bw = bw)
+    } else{
+
+      c_ob = list(counternull_perm = NULL, low = NULL, high = NULL,
+                  counternull_perm_two = NULL,
+                  low_two = NULL, high_two = NULL, null_r = null_r,
+                  bw = bw)
     }
+
   }
-  if(low > high){ # no remaining numbers to search
-    print("No Counternull Values found.")
-    perm_samples<-create_null_distribution(sample_data,extreme,
-                                           rand_matrix,
-                                           permutation_null_function,
-                                           test_stat,
-                                           variable,iterations)
-    null_hist<-hist(perm_samples,breaks=100,col = "gold")
-    plot(null_hist, col="gold",xlim=c(min(perm_samples),max(perm_samples)),
-         main = paste("Null Distribution"),
-    xlab = "Test Statistics")  # first histogram
-    abline(v=test_stat,col="black",lty=2, lwd=5)
-    return(0)
-  }
-  return(invisible(counter_samples))
+
+  class(c_ob) = "counternull"
+  return(invisible(c_ob))
+
 }
+
+#' @export
+summary.counternull = function(object, ...){
+  if(is.null(object$low) & is.null(object$low_two)){
+    message("No counternull values found.")
+  }
+
+  if(is.null(object$low) & !is.null(object$low_two)){
+    cat("Counternull Set: [", object$low_two,",", object$high_two,"]")
+  }
+
+  if(!is.null(object$low) & is.null(object$low_two)){
+    cat("Counternull Set: [", object$low,",", object$high,"]")
+  }
+
+  if(!is.null(object$low) & !is.null(object$low_two)){
+
+    cat("Counternull Set (Positive): [", object$low,",",
+         object$high,"]", "\nCounternull Set (Negative): [", object$low_two,
+        ",", object$high_two,"]")
+  }
+
+
+}
+
+
+#' @export
+#' @import ggplot2
+#' @import dplyr
+plot.counternull=function(x, ...){
+  # Plots counternull distribution
+
+  null_r = x$null_r
+  bw = x$bw
+
+  if(is.null(x$low) & is.null(x$low_two)){
+    message("No counternull values found.")
+    return()
+  }
+
+
+
+  ## Plotting  counter and null distributions
+  if(is.null(bw)){
+    bw = 2 * IQR(x$counternull_perm) / length(x$counternull_perm)^(1/3)
+    # Freedman Diaconis Rule
+    if(length(x$counternull_perm) >= 30){ # min 30 bins
+      bw=min(bw,(max(x$counternull_perm) - min(x$counternull_perm))/30)
+    }
+
+    if(bw == 0){
+      bw = length(x$null_dist)/3
+    }
+
+  }
+
+
+
+
+  xx= NULL
+  group = NULL
+
+
+  if(!is.null(x$low) & !is.null(x$low_two)){
+
+    dat = data.frame(xx = c(x$counternull_perm, null_r$null_dist),
+                      group = rep(1:0, each = length(x$counternull_perm)))
+
+
+    p1= ggplot(dat,aes(x=xx))+
+      geom_histogram(data=subset(dat,group=='0'),aes(fill=factor(group)),
+                     alpha=0.5, binwidth = bw) +
+      geom_histogram(data=subset(dat,group=='1'),aes(fill=factor(group)),
+                     alpha=0.5, binwidth = bw)+
+      scale_fill_manual(name="group", values=c("steelblue2", "grey69"),
+                        labels=c("Null","Counternull")) +
+      geom_vline(xintercept = null_r$t_obs,
+                 linewidth = 1.5,
+                 colour = "black", alpha = .8) +
+      xlab("Permuted Test Statistics") + ylab("Counts") +
+      guides(fill=guide_legend("Distributions")) +
+      ggtitle("Counternull Distribution (Positive Set)") +
+      theme_classic()
+
+    plot(p1)
+
+
+    dat = data.frame(xx = c(x$counternull_perm_two, null_r$null_dist),
+                      group = rep(1:0, each = length(x$counternull_perm_two)))
+
+
+    p2= ggplot(dat,aes(x=xx))+
+      geom_histogram(data=subset(dat,group=='0'),aes(fill=factor(group)),
+                     alpha=0.5, binwidth = bw) +
+      geom_histogram(data=subset(dat,group=='1'),aes(fill=factor(group)),
+                     alpha=0.5, binwidth = bw)+
+      scale_fill_manual(name="group", values=c("steelblue2", "grey69"),
+                        labels=c("Null","Counternull")) +
+      geom_vline(xintercept = null_r$t_obs,
+                 linewidth = 1.5,
+                 colour = "black", alpha = .8) +
+      xlab("Permuted Test Statistics") + ylab("Counts") +
+      guides(fill=guide_legend("Distributions")) +
+      ggtitle("Counternull Distribution (Negative Set)") +
+      theme_classic()
+
+    plot(p2)
+
+
+
+  }
+
+  if(is.null(x$low) & !is.null(x$low_two)){
+
+    dat = data.frame(xx = c(x$counternull_perm_two, null_r$null_dist),
+                      group = rep(1:0, each = length(x$counternull_perm_two)))
+
+  }
+
+  if(!is.null(x$low) & is.null(x$low_two)){
+
+    da=data.frame(xx = c(x$counternull_perm, null_r$null_dist),
+                      group = rep(1:0, each = length(x$counternull_perm)))
+  }
+
+  if((is.null(x$low) & !is.null(x$low_two)) |
+     (!is.null(x$low) & is.null(x$low_two))){
+    p1= ggplot(dat,aes(x=xx))+
+      geom_histogram(data=subset(dat,group=='0'),aes(fill=factor(group)),
+                     alpha=0.5, binwidth = bw) +
+      geom_histogram(data=subset(dat,group=='1'),aes(fill=factor(group)),
+                     alpha=0.5, binwidth = bw)+
+      scale_fill_manual(name="group", values=c("steelblue2", "grey69"),
+                        labels=c("Null","Counternull")) +
+      geom_vline(xintercept = null_r$t_obs,
+                 linewidth = 1.5,
+                 colour = "black", alpha = .7) +
+      xlab("Permuted Test Statistics") + ylab("Counts") +
+      guides(fill=guide_legend("Distributions")) +
+      ggtitle("Counternull Distribution") +
+      theme_classic()
+
+    plot(p1)
+
+  }
+
+
+
+}
+
+
+
 

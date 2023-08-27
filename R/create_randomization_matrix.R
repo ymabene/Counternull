@@ -1,63 +1,41 @@
-#' Creates randomization matrix for paired data
+#' Create Randomization Matrix
 #'
-#' Returns matrix with unique randomized allocations for paired data.
-
-#' @param sample_data Sample data set. Data should have first column indicating
-#' exposure (1) or non exposure (0) for each group (row) that is measured. Each
-#' measured outcome (variable) should be represented by an additional column.
-#' For paired randomization, data must be ordered so that paired units are in
-#' subsequent rows.
-#' @param arrangements Numbers of arrangements generated of exposure assignments
-#' of which unique arrangements are extracted
-#' @param units Number of units there are to measure in dataset
-#' (One pair = control unit + experimental unit)
-#' @param pair 1 for paired randomization. 0 for non-paired randomization
+#' Creates randomization matrix of assignments for given number of units and
+#' permutations.Returns matrix with unique randomized permutations.
+#'
+#' @param n Number of permutations
+#' @param units Number of units in dataset
+#' @param block Numeric vector with length equal to "units"
+#' indicating block assignments for each unit (optional)
 #' @examples
-#' create_randomization_matrix(sample_district_1DS,10000,14,1)
-#' @return Matrix with unique randomized allocations for paired data
+#' create_randomization_matrix(14,128,rep(1:7, each = 2))
+#' @return Matrix with unique randomized permutations
 #' @export
+#' @import randomizr
+#' @details
+#' Note, if the number of specified permutations exceeds the maximum number
+#' of unique permutations, the matrix returned will contain the
+#' maximum number of permutations.
 
-create_randomization_matrix<-function(sample_data,
-                                         arrangements,units,pair){
 
-  rand<-matrix(ncol=arrangements,nrow=units)
-
-  if(pair==1){
-    for(j in 1:arrangements)
-    {
-      count<-1
-      for(i in 1:(units/2)) # for each pair
-      {
-        a<-sample(c(0,1),2,replace=FALSE)  # unique values
-        rand[count,j]<-a[1]  # puts 1 or 0 into matrix
-        rand[count+1,j]<-a[2] # puts 1 or 0 into matrix
-        count<-count+2 # increments row
-      }
-
+create_randomization_matrix=function(units,n,block = NULL){
+  if(!is.null(block)){
+    if(!is.numeric(block) | length(block) != units){
+      stop('Argument "block" must be a numeric vector with length equal to
+           argument "unit".')
     }
+    declaration = declare_ra(blocks = block )
 
-    # unique pairs only
-    dim(unique(t(rand)))
-    rand.t<-unique(t(rand))
-    rand<-t(rand.t)
-    return(invisible(rand))
-
-  } else {
-    v<-vector(length=units)
-    v[1:(units/2)]<-1
-    for(j in 1:arrangements)
-    {
-        a<-sample(v) # random arrangment
-        rand[,j]<-a
+  } else{
+    if(!is.numeric(units)){
+      stop('Argument "units" must be a numeric.')
     }
-
-    # unique pairs only
-    dim(unique(t(rand)))
-    rand.t<-unique(t(rand))
-    rand<-t(rand.t)
-    return(invisible(rand))
-
+    declaration =declare_ra(N = units)
   }
-
+  if(!is.numeric(n)){
+    stop('Argument "n" must be a numeric.')
+  }
+  rand = obtain_permutation_matrix(declaration, n)
+  return(invisible(rand))
 
 }

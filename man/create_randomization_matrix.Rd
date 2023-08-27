@@ -2,31 +2,30 @@
 % Please edit documentation in R/create_randomization_matrix.R
 \name{create_randomization_matrix}
 \alias{create_randomization_matrix}
-\title{Creates randomization matrix for paired data}
+\title{Create Randomization Matrix}
 \usage{
-create_randomization_matrix(sample_data, arrangements, units, pair)
+create_randomization_matrix(units, n, block = NULL)
 }
 \arguments{
-\item{sample_data}{Sample data set. Data should have first column indicating
-exposure (1) or non exposure (0) for each group (row) that is measured. Each
-measured outcome (variable) should be represented by an additional column.
-For paired randomization, data must be ordered so that paired units are in
-subsequent rows.}
+\item{units}{Number of units in dataset}
 
-\item{arrangements}{Numbers of arrangements generated of exposure assignments
-of which unique arrangements are extracted}
+\item{n}{Number of permutations}
 
-\item{units}{Number of units there are to measure in dataset
-(One pair = control unit + experimental unit)}
-
-\item{pair}{1 for paired randomization. 0 for non-paired randomization}
+\item{block}{Numeric vector with length equal to "units"
+indicating block assignments for each unit (optional)}
 }
 \value{
-Matrix with unique randomized allocations for paired data
+Matrix with unique randomized permutations
 }
 \description{
-Returns matrix with unique randomized allocations for paired data.
+Creates randomization matrix of assignments for given number of units and
+permutations.Returns matrix with unique randomized permutations.
+}
+\details{
+Note, if the number of specified permutations exceeds the maximum number
+of unique permutations, the matrix returned will contain the
+maximum number of permutations.
 }
 \examples{
-create_randomization_matrix(sample_district_1DS,10000,14,1)
+create_randomization_matrix(14,128,rep(1:7, each = 2))
 }

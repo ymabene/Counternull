@@ -2,106 +2,61 @@
 % Please edit documentation in R/find_counternull_values.R
 \name{find_counternull_values}
 \alias{find_counternull_values}
-\title{Finds counternull values}
+\title{Find Counternull Values}
 \usage{
-find_counternull_values(
-  obs_pval,
-  sample_data,
-  extreme,
-  rand_matrix,
-  permutation_null_function,
-  permutation_counter_function,
-  low,
-  high,
-  test_stat,
-  variable,
-  iterations,
-  pairs,
-  round_p,
-  round_c,
-  increment
-)
+find_counternull_values(null_r, counts = NULL, bw = NULL)
 }
 \arguments{
-\item{obs_pval}{P-value from null distribution}
+\item{null_r}{"null_rand" object corresponding to data}
 
-\item{sample_data}{Sample data set. Data should have first column indicating
-exposure (1) or non exposure (0) for each group (row) that is measured. Each
-measured outcome (variable) should be represented by an additional column.
-Data must be ordered so that paired units are in subsequent rows.}
+\item{counts}{Vector containing lower and upper bounds for number of
+test statistics more extreme than observed test statistic in
+counternull randomization distribution (optional)}
 
-\item{extreme}{Direction which is defined as more extreme for test statistic
-in distribution (0 for less or 1 for greater)}
-
-\item{rand_matrix}{Matrix with all possible randomizations of exposure
-assignment}
-
-\item{permutation_null_function}{Function used to create permutation
-vector (Vector of tests statistics created from sampling that are used as
-datapoints for null and counternull distribution. Test statistic much match observed
-test statistic.)}
-
-\item{permutation_counter_function}{Function used to create permutation vector
-for counternull distribution (must be same test statistic used in null distribution)}
-
-\item{low}{Lower bound of counternull value search}
-
-\item{high}{Upper bound of counternull value search}
-
-\item{test_stat}{Observed test statistic. (You can use built in functions to
-find various test statistics in given dataset)}
-
-\item{variable}{Variable measured for test statistic. (Format: sample_data$column)}
-
-\item{iterations}{Number of unique arrangements of exposure assignments
-used to generate distribution (At most the number of rows in rand_matrix)}
-
-\item{pairs}{Number of pairs of units there are to measure in dataset
-(One pair = control unit + experimental unit)}
-
-\item{round_p}{Number of significant digits P-value should be rounded to}
-
-\item{round_c}{Number of decimal places counternull values should be rounded to}
-
-\item{increment}{Value to increment numbers by to find counternull values
-(Smaller numbers increase accuracy and run time for retrieving counternull values)}
+\item{bw}{Histogram bin width (optional)}
 }
 \value{
-Vector of Counternull Values (Numeric 0 if none are found)
+Class "counternull" with 6 entries:
+\describe{
+\item{counternull_perm}{Counternull test statistics for first counternull set}
+\item{low}{Counternull test statistics for second counternull set}
+\item{high}{Lower bound of counternull set}
+\item{counternull_perm_two}{Upper bound of counternull set}
+\item{low_two}{Lower bound of second counternull set}
+\item{high_two}{Upper bound of second counternull set}
+\item{null_rand}{Specified "null_rand" object}
+\item{bw}{Specified bin width}
+}
 }
 \description{
-Finds and prints full range of counternull values, the given test
-statistic and  p-value. Plots null and counternull distribution
-if counternull values are found. Otherwise only null distribution is displayed.
-Observed test statistic is indicated in distribution using dashed
-black line. No effect is indicated with gray dashed line. Counternull
-value is indicated with red dashed line. Counternull values are
-returned if found. 0 is returned otherwise.
+Retrieves counternull value set and returns object of "counternull" class.
+}
+\details{
+Call summary on "counternull" class to retrieve range of counternull values.
+Call plot on "counternull" class for visualization
+of counternull distribution.
+
+Argument "counts" must contain whole numbers for bounds.Lower bound must be
+smaller than upper bound. If argument is not specified, counternull values
+will be obtained using the "counts" argument from the specified "null_rand"
+argument.
+
+If no counternull values are found, all entries in class are set to null.
+If only one set of counternull values are found, "perm_two", low_two"
+and "high_two" are set to null.
 }
 \examples{
 \donttest{
-find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
-permutation_null_diff_means,permutation_counter_diff_means,
--8000,0, find_test_stat_diff_means(sample_district_1DS,
-sample_district_1DS$charge_prosecuted_1000_rate_post -
-sample_district_1DS$charge_prosecuted_1000_rate_pre),
-sample_district_1DS$charge_prosecuted_1000_rate_post-
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
-
-find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
-permutation_null_t,permutation_counter_t,
--8000,0, find_test_stat_t(sample_district_1DS,
-sample_district_1DS$charge_prosecuted_1000_rate_post -
-sample_district_1DS$charge_prosecuted_1000_rate_pre),
-sample_district_1DS$charge_prosecuted_1000_rate_post-
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
-
-find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
-permutation_null_paired_t,permutation_counter_paired_t,
--8000,0, find_test_stat_paired_t(sample_district_1DS,
-sample_district_1DS$charge_prosecuted_1000_rate_post -
-sample_district_1DS$charge_prosecuted_1000_rate_pre),
-sample_district_1DS$charge_prosecuted_1000_rate_post-
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7,5,0,1)
+n_r = create_null_rand(sample_data$turn_angle, sample_data$w,
+sample_matrix, test_stat = c("diffmeans"))
+c = find_counternull_values(n_r)
+summary(c)
+plot(c)
+c = find_counternull_values(n_r, c(56,60))
+summary(c)
 }
+
+}
+\references{
+\doi{10.1111/j.1467-9280.1994.tb00281.x}
 }

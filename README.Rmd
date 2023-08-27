@@ -18,17 +18,19 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-Counternull package allows users to resample data for
-randomization-based testing. Users may generate null randomization distributions
-from their own datasets and calculate tests statistics and P-values. This 
-package allows users to identify counternull sets in a dataset and plot 
-counternull randomization distributions. The ability for users to obtain both 
-P-values and counternull sets from a dataset helps prevent against common
-misinterpretations in hypothesis testing.
+Counternull package allows users to conduct Randomization-Based Inference for 
+customized experiments. The package may be used to compute Fisher-Exact 
+P-Values alongside null randomization distributions. Additionally, 
+users can retrieve counternull sets, generate counternull distributions,
+compute Fisher Intervals, and Fisher-Adjusted P-Values. The package may be used
+on data of any size and distribution including usage with custom made test 
+statistics.
+
 
 ## Installation
 
-You can install the released version of Counternull from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of Counternull from 
+[CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 install.packages("Counternull")
@@ -40,28 +42,17 @@ Examples of functions that can be used in Counternull Package:
 
 ```{r example}
 library(Counternull)
-## prints test statistic and P-value from dataset
-## plots null distribution of given dataset
-## dashed black line: test statistic
-create_null_distribution(sample_district_1DS,0,rand_matrix_1DS,
-permutation_null_diff_means,find_test_stat_diff_means(sample_district_1DS,
-sample_district_1DS$charge_prosecuted_1000_rate_post -
-sample_district_1DS$charge_prosecuted_1000_rate_pre),
-sample_district_1DS$charge_prosecuted_1000_rate_post -
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128)
+y = sample_data$turn_angle
+w = sample_data$w
+n_r = create_null_rand(y, w, sample_matrix, test_stat = c("t"))
+summary(n_r)
+plot(n_r)
 
-## prints counternull values of given data set
-## plots null and counternull distribution from dataset
-## dashed black line: test statistic,
-## dashed red line: counternull value,
-## dashed gray line: 0
-find_counternull_values(.375,sample_district_1DS,0,rand_matrix_1DS,
-permutation_null_diff_means,permutation_counter_diff_means,
--8000,0, find_test_stat_diff_means(sample_district_1DS,
-sample_district_1DS$charge_prosecuted_1000_rate_post -
-sample_district_1DS$charge_prosecuted_1000_rate_pre),
-sample_district_1DS$charge_prosecuted_1000_rate_post-
-sample_district_1DS$charge_prosecuted_1000_rate_pre,128,7)
+n_r = create_null_rand(sample_data$turn_angle, sample_data$w,
+sample_matrix, test_stat = c("diffmeans"))
+c = find_counternull_values(n_r)
+summary(c)
+plot(c)
 ```
 
 ## License
