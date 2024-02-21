@@ -11,6 +11,14 @@ test_that("assess fisher ",{
                            "pvalue_lower", "pvalue_upper", "range",
                            "null_r"))
 
+  expected = create_fisher_interval(n_r, width = -100)
+  expect_s3_class(expected, "fisher_interval")
+  expect_named(expected, c("lower_bound", "upper_bound", "alpha",
+                           "pvalue_lower", "pvalue_upper", "range",
+                           "null_r"))
+
+  expect_error(create_fisher_interval(n_r, width = "a"))
+
   fun = function (x,y){
     return(invisible(6))
   }

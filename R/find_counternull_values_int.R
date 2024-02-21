@@ -2,6 +2,8 @@
 #'
 #' @param obs_c Number of extreme test statistics in null distribution
 #' @param search Range of effect sizes to test as counternull values
+#' @param width Integer indicating the number of values to search for to retrieve
+#' counternull set.
 #' @param t_obs Observed test statistic
 #' @param y Vector of observed outcomes
 #' @param w Vector indicating treatment assignments
@@ -19,12 +21,12 @@
 
 
 
-find_counternull_values_int=function(obs_c, search, t_obs, y,w,
+find_counternull_values_int=function(obs_c, search,width, t_obs, y,w,
                                       alternative,rand_matrix,
                                       test_stat, fun,
                                       s){
   low = 1
-  high = 10000
+  high = width
   index = (round((low + high) / 2))
   counternull_value=search[index] # estimated counternull value
 

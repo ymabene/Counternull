@@ -5,6 +5,9 @@
 #' @param counts Vector containing lower and upper bounds for number of
 #' test statistics more extreme than observed test statistic in
 #' counternull randomization distribution (optional)
+#' @param width Integer indicating the number of values to search for to retrieve
+#' counternull set. Default value = 10000. (Increasing this argument may result
+#' in additional counternull values being found.) (optional)
 #' @param bw Histogram bin width (optional)
 #'
 #' @examples
@@ -42,11 +45,13 @@
 #' If no counternull values are found, all entries in class are set to null.
 #' If only one set of counternull values are found, "perm_two", low_two"
 #' and "high_two" are set to null.
+#'
+#'
 #' @references \doi{10.1111/j.1467-9280.1994.tb00281.x}
 #' @export
 
 
-find_counternull_values=function(null_r, counts = NULL, bw = NULL){
+find_counternull_values=function(null_r, counts = NULL,width = NULL, bw = NULL){
 
   if(!inherits(null_r,"null_rand")){
     stop('Argument "null_r" must be of class "null_rand".')
@@ -55,6 +60,13 @@ find_counternull_values=function(null_r, counts = NULL, bw = NULL){
   if(!is.null(bw)){
     if(!is.numeric(bw) | length(bw) != 1 | bw <= 0){
       stop('Argument "bw" must be a positive numeric scalar.')
+    }
+
+  }
+
+  if(!is.null(width)){
+    if(!is.numeric(width) | length(width) != 1){
+      stop('Argument "width" must be an integer.')
     }
 
   }
@@ -87,19 +99,23 @@ find_counternull_values=function(null_r, counts = NULL, bw = NULL){
 
   # bounds are 4 times the observed effect size
   low = 1
-  high = 10000
+  if(!is.null(width)){
+    high = max(10000, width)
+  } else{
+    high = 10000
+  }
   search=seq(-4*abs(null_r$t_obs),4*abs(null_r$t_obs),
               8*abs(null_r$t_obs)/(high-1))
 
   if(null_r$alternative == "two-sided"){
     s_p=search[search>=0]
     s_n=search[search<0]
-    p=find_counternull_values_int(counts, search, null_r$t_obs, null_r$y,
+    p=find_counternull_values_int(counts, search,high, null_r$t_obs, null_r$y,
                                    null_r$w, null_r$alternative,
                                    null_r$rand_matrix,null_r$test_stat,
                                    null_r$fun, s=0)
 
-    n=find_counternull_values_int(counts, search, null_r$t_obs, null_r$y,
+    n=find_counternull_values_int(counts, search, high,null_r$t_obs, null_r$y,
                                    null_r$w, null_r$alternative,
                                   null_r$rand_matrix, null_r$test_stat,
                                    null_r$fun, s=1)
@@ -141,7 +157,7 @@ find_counternull_values=function(null_r, counts = NULL, bw = NULL){
 
 
   } else{
-    c <- find_counternull_values_int(counts, search, null_r$t_obs,
+    c <- find_counternull_values_int(counts, search,high, null_r$t_obs,
                                      null_r$y,null_r$w,
                                  null_r$alternative,null_r$rand_matrix,
                                  null_r$test_stat, null_r$fun, s=0)
@@ -285,7 +301,7 @@ plot.counternull=function(x, ...){
 
   if(!is.null(x$low) & is.null(x$low_two)){
 
-    da=data.frame(xx = c(x$counternull_perm, null_r$null_dist),
+    dat=data.frame(xx = c(x$counternull_perm, null_r$null_dist),
                       group = rep(1:0, each = length(x$counternull_perm)))
   }
 

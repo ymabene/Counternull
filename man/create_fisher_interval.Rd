@@ -4,13 +4,17 @@
 \alias{create_fisher_interval}
 \title{Compute Fisher Interval}
 \usage{
-create_fisher_interval(null_r, alpha = NULL)
+create_fisher_interval(null_r, alpha = NULL, width = NULL)
 }
 \arguments{
 \item{null_r}{"null_rand" object corresponding to data used for interval}
 
 \item{alpha}{Significance level for Fisher Interval (default = .05
 for 95\% confidence)}
+
+\item{width}{Integer indicating the number of values to search for to construct
+Fisher Interval. Default value = 10000. (Increasing this argument may result
+in increased accuracy of interval.) (Optional)}
 }
 \value{
 Class "fisher_interval" with 4 entries:

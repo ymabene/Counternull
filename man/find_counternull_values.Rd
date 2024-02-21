@@ -4,7 +4,7 @@
 \alias{find_counternull_values}
 \title{Find Counternull Values}
 \usage{
-find_counternull_values(null_r, counts = NULL, bw = NULL)
+find_counternull_values(null_r, counts = NULL, width = NULL, bw = NULL)
 }
 \arguments{
 \item{null_r}{"null_rand" object corresponding to data}
@@ -12,6 +12,10 @@ find_counternull_values(null_r, counts = NULL, bw = NULL)
 \item{counts}{Vector containing lower and upper bounds for number of
 test statistics more extreme than observed test statistic in
 counternull randomization distribution (optional)}
+
+\item{width}{Integer indicating the number of values to search for to retrieve
+counternull set. Default value = 10000. (Increasing this argument may result
+in additional counternull values being found.) (optional)}
 
 \item{bw}{Histogram bin width (optional)}
 }

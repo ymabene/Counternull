@@ -13,7 +13,16 @@ test_that("assess counternull values", {
                            "counternull_perm_two",
                            "low_two", "high_two", "null_r", "bw"))
 
+  expected = find_counternull_values(n_r, width = -100)
+
+  expect_s3_class(expected, "counternull")
+  expect_named(expected, c("counternull_perm", "low", "high",
+                           "counternull_perm_two",
+                           "low_two", "high_two", "null_r", "bw"))
+
   expect_error(find_counternull_values(y))
+
+  expect_error(find_counternull_values(n_r,width = c(10000,100)))
 
   t_r = n_r
   t_r$rand_matrix = n_r$rand_matrix[1:7,]

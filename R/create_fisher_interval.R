@@ -5,6 +5,9 @@
 #' @param null_r "null_rand" object corresponding to data used for interval
 #' @param alpha Significance level for Fisher Interval (default = .05
 #' for 95\% confidence)
+#' @param width Integer indicating the number of values to search for to construct
+#' Fisher Interval. Default value = 10000. (Increasing this argument may result
+#' in increased accuracy of interval.) (Optional)
 #'
 #' @examples
 #' \donttest{
@@ -43,7 +46,7 @@
 #' @references \doi{10.48550/arXiv.2105.03996}
 #' @export
 
-create_fisher_interval=function(null_r,alpha=NULL){
+create_fisher_interval=function(null_r,alpha=NULL,width = NULL){
 
   if(is.null(alpha)){
     alpha = .05
@@ -57,7 +60,12 @@ create_fisher_interval=function(null_r,alpha=NULL){
     stop('Argument "null_r" must be of "null_rand" class.' )
   }
 
+  if(!is.null(width)){
+    if(!is.numeric(width) | length(width) != 1){
+      stop('Argument "width" must be an integer.')
+    }
 
+  }
 
   bounds=vector(length=2)
   low_c=(alpha/2)*length(null_r$null_dist)
@@ -65,7 +73,11 @@ create_fisher_interval=function(null_r,alpha=NULL){
 
   #  initial bounds are 4 times the observed effect size
   low = 1
-  high = 10000
+  if(!is.null(width)){
+    high = max(10000, width)
+  } else{
+    high = 10000
+  }
   bounds_l = -4*abs(null_r$t_obs)
   bounds_h = 4*abs(null_r$t_obs)
   i = 0
