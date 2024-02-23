@@ -11,3 +11,6 @@
 
 * Added new examples to vignette
   
+# Counternull 0.2.1 (2024-02-21)
+
+* Added "width" parameter to increase accuracy in counternull set
