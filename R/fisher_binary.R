@@ -2,6 +2,7 @@
 #'
 #'
 #' @param search List of effect sizes
+#' @param width Length of search parameter
 #' @param low_c Lower bound to match based on specified alpha value
 #' @param high_c Upper bound to match based on specified alpha value
 #' @param y Vector of observed outcomes
@@ -12,15 +13,15 @@
 #' @param fun Test statistic function (optional).
 #' @param t_obs Observed test statistic
 #' @param rand_matrix Randomization matrix
-#' @return List contraining bounds of Fisher interval and p-value bounds
+#' @return List containing bounds of Fisher interval and p-value bounds
 #' @noRd
 
 
 
-fisher_binary=function(search, low_c, high_c, y,w,test_stat, fun,
+fisher_binary=function(search, width, low_c, high_c, y,w,test_stat, fun,
                         t_obs, rand_matrix){
   low = 1
-  high = 10000
+  high = width
   bounds=vector(length = 2)
   index = (round((low + high) / 2))
 
@@ -86,7 +87,7 @@ fisher_binary=function(search, low_c, high_c, y,w,test_stat, fun,
   }
 
   low = 1
-  high = 10000
+  high = width
   index = (round((low + high) / 2))
 
   while (low <= high){ # high
@@ -113,7 +114,7 @@ fisher_binary=function(search, low_c, high_c, y,w,test_stat, fun,
 
       }
 
-      while(index < 10000){ # find largest interval
+      while(index < width){ # find largest interval
         c_r = count(y,w,test_stat, fun, t_obs, search[index + 1],
                      rand_matrix, "less")$counts
         if(c_r == high_c){

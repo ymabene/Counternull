@@ -109,7 +109,7 @@ create_fisher_interval=function(null_r,alpha=NULL,width = NULL){
   }
 
 
-  ls=fisher_binary(search, low_c, high_c, null_r$y,null_r$w,
+  ls=fisher_binary(search,high, low_c, high_c, null_r$y,null_r$w,
                         null_r$test_stat,null_r$fun,
                         t_obs=null_r$t_obs, rand_matrix=null_r$rand_matrix)
 
