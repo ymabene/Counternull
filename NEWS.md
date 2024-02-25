@@ -16,6 +16,6 @@
 * Added "width" parameter to increase accuracy in counternull set
 
   
-# Counternull 0.2.1 (2024-02-23)
+# Counternull 0.2.12 (2024-02-23)
 
 * Adjusted "width" functionality for Fisher Intervals
